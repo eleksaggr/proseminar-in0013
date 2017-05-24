@@ -1,0 +1,165 @@
+\documentclass{beamer}
+
+\usefonttheme[onlymath]{serif}
+\usefonttheme{structurebold}
+\usetheme{Boadilla}
+\usecolortheme{rose}
+\beamertemplatebookbibitems
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertsection
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \usebeamerfont{date in head/foot}\insertsubsection\hspace*{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\usepackage[absolute,overlay]{textpos}
+\textblockorigin{1em}{2em} % coordinates of zero/zero
+\setlength{\TPHorizModule}{.10\textwidth}   % units are 1/10th of a page width
+\setlength{\TPVertModule}{.10\textheight}   % units are 1/10th of a page height
+\newcommand{\absolute}[4]{
+    \begin{textblock}{0.1}(#1,#2) % {horizontale Ausdehnung}(linksoben_x, linkoben_y) ?
+    \pgfimage[height=#3]{#4}
+    \end{textblock}
+}
+\usepackage{graphicx,colortbl,etex,helvet,tikz}
+
+%Source Code highlighting
+\usepackage{minted}
+\usemintedstyle{colorful}
+%Background for minted source code
+\definecolor{almostnogray}{rgb}{0.92,0.92,0.92}
+\definecolor{dgreen}{rgb}{0.1,0.5,0.1}
+\definecolor{dgrey}{rgb}{0.5,0.5,0.5}
+\definecolor{dred}{rgb}{0.5,0.1,0.1}
+
+\newcommand{\haekchen}{{\Large\color{dgreen}\checkmark}}
+\newcommand{\attention}{{\scalebox{.75}{\bf\input{svg/attention.pdf_tex}}}\ }
+\newcommand{\conclude}{{\color{dred}$\leadsto\;$}}
+
+% Math abbrevs etc...
+\renewcommand{\O}[1]{{{\cal O}({#1})}}
+\include{tumlogos}
+
+% title
+\title{Garbage Collection \& Reference Counting}
+\author{Clemens Ruck \& Alex Egger}
+\institute[TUM]{
+\vspace{-19em}\tumheader\vspace{18em}}
+\date{Summer Term 2017}
+
+\newmint{java}{}
+\newmint{cpp}{}
+\newmint{llvm}{}
+\newminted{java}{mathescape,bgcolor=almostnogray}
+\newminted{cpp}{mathescape,bgcolor=almostnogray}
+\newminted{llvm}{mathescape,bgcolor=almostnogray}
+
+\begin{document}
+\setbeamertemplate{footline}{}
+
+\maketitle
+
+    \begin{frame}
+        \frametitle{Overview}
+		\begin{textblock}{6}(0,0)
+			\begin{alertblock}{Methods of Memory Management}
+				\begin{enumerate}
+					\item Shortcomings of Manual Memory Management
+					\item Garbage Collection
+				\end{enumerate}
+			\end{alertblock}
+			\begin{alertblock}{Memory Management in Rust}
+				\begin{enumerate}
+					\item Rust's approach
+					\item Stack Allocation
+					\item Heap Allocation with Box\textless T\textgreater
+					\item Comparison of Stack and Heap allocations
+				\end{enumerate}
+			\end{alertblock}
+			\begin{alertblock}{Reference Counting}
+				\begin{enumerate}
+					\item Concept
+					\item Problems 
+					\item Rc\textless T\textgreater in Rust
+				\end{enumerate}
+			\end{alertblock}
+			\begin{alertblock}{The 'unsafe' keyword}
+			\end{alertblock}
+		\end{textblock}
+    \end{frame}
+    \begin{frame}
+        \frametitle{Common shortcomings of manual memory management}
+    \end{frame}
+    \begin{frame}		
+		\frametitle{Garbage Collection}
+    \end{frame}
+	\begin{frame}
+		\frametitle{Example - Mark \& Sweep}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Memory management in Rust}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Stack Allocation}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Workings of the Stack}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Advantages \& Limitations}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Heap Allocation}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Workings of the Heap}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Box\textless T\textgreater  in Rust}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Use cases}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Comparison: Heap vs. Stack}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Reference Counting}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Limitations}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Rc\textless T\textgreater (and Weak\textless T\textgreater) in Rust}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Example}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Limitations of Rc\textless T\textgreater}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Multi-threaded Reference Counting with Arc\textless T\textgreater}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Example}
+	\end{frame}
+	\begin{frame}
+		\frametitle{The 'unsafe' keyword}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Use cases}
+	\end{frame}
+\end{document}

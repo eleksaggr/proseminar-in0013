@@ -1,0 +1,31 @@
+- Manual memory management
+    - Common problems with manual memory management
+- Garbage Collection
+    - How does garbage collection work?
+    - Example of a Mark&Sweep algorithm
+- Short overview of Rust's approach to memory management (and motivation)
+- Stack Allocation
+    - How does the stack work?
+    - How does Rust use the stack?
+    - Visual example of a stack allocation
+    - Advantages of stack allocation and limitations
+- Heap Allocation
+    - How does the heap work?
+    - How can one use the heap in Rust (Box<T>)?
+    - Visual example of heap allocation
+    - Use cases of heap allocation
+- Comparison of Stack vs Heap allocation performance
+- Reference Counting
+    - What is the concept behind reference counting?
+    - Limitations of reference counting (Cyclical references & Speed)
+    - How can one make use of reference counting in Rust?
+    - Detailed look at Rc<T> (and Weak<T>)
+    - Example usage of Rc<T>
+    - Common pitfalls and limitations in using Rc<T>
+    - Multi-threaded reference counting with Arc<T>
+    - Example usage of Arc<T>
+- Unsafe Operations
+    - The 'unsafe' keyword
+    - Use cases of an unsafe block
+
+If not enough content possibly include cell-types ie. Cell<T> and RefCell<T>

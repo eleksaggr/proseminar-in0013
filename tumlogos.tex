@@ -1,0 +1,98 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% ABAKUS, use with \ABAKUS
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\ABAKUS{\begingroup\offinterlineskip
+
+% Parameter (\"anderbar)
+\dimen0=24pt            % Gesamtgr\"o{\ss}e
+\dimen1=0.01\dimen0 % Strichdicke
+%\dimen1=.8pt
+\font\kugelfont=cmbsy5 scaled \magstephalf   % 1,2 facher cmbsy font
+\def\kugel{{\kugelfont\char'16}}%
+
+% Hilfsgr\"o{\ss}en
+\dimen2=\dimen0\advance\dimen2by-6\dimen1\divide\dimen2by5%Spaltenbreite
+\def\h{\hskip\dimen2}%
+\dimen3=\dimen0\advance\dimen3by-3\dimen1\divide\dimen3by7%Zeilenh\"ohe
+\setbox0\hbox to\dimen1{\hss\kugel\hss}%
+\dimen4=\dimen3\advance\dimen4by-\ht0\advance\dimen4by-\dp0
+  \divide\dimen4by2%Reststrichl\"ange \"uber und unter der Kugel
+\def\restline{\hrule height\dimen4 depth0pt width\dimen1}%
+\def\O{\vbox{\restline\copy0\restline}}%
+\def\N{\vrule height\dimen3 depth0pt width\dimen1}%
+% Abakus Tabelle
+\vtop{\hrule height0pt depth\dimen1
+      \hbox{\N\h\O\h\N\h\N\h\N\h\N}
+      \hbox{\N\h\N\h\O\h\O\h\O\h\N}
+      \hrule height\dimen1
+      \hbox{\N\h\O\h\O\h\O\h\O\h\N}
+      \hbox{\N\h\N\h\O\h\N\h\O\h\N}
+      \hbox{\N\h\O\h\O\h\O\h\N\h\N}
+      \hbox{\N\h\O\h\O\h\O\h\O\h\N}
+      \hbox{\N\h\O\h\N\h\O\h\O\h\N}
+      \hrule height\dimen1
+     }
+\endgroup}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% TUM Logo, use with \TUM{1cm}
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\TUM#1{% von Gunnar Teege (leicht ge\"andert (siehe Kommentar))
+%Argument gibt die Breite an
+\dimen0=#1\dimen0=.018\dimen0%(war.012)% (war .018)
+\dimen1=#1\dimen1=.1143\dimen1%
+\dimen2=#1\dimen2=.419\dimen2%
+\dimen3=#1\dimen3=.0857\dimen3%
+%
+\dimen4=\dimen1\advance\dimen4 by-\dimen0%
+\setbox1=\vbox{\hrule width\dimen0 height\dimen4 depth0pt}%
+\advance\dimen4 by\dimen2%
+\setbox8=\vbox{\hrule width\dimen0 height\dimen4 depth0pt}%
+\advance\dimen4 by-\dimen2\advance\dimen4 by-\dimen0%
+\setbox4=\vbox{\hrule width\dimen4 height\dimen0 depth0pt}%
+\advance\dimen4 by\dimen1\advance\dimen4 by\dimen3%
+\setbox6=\vbox{\hrule width\dimen4 height\dimen0 depth0pt}%
+\advance\dimen4 by\dimen3\advance\dimen4 by\dimen0%
+\setbox9=\vbox{\hrule width\dimen4 height\dimen0 depth0pt}%
+\advance\dimen4 by\dimen1%
+\setbox7=\vbox{\hrule width\dimen4 height\dimen0 depth0pt}%
+\dimen4=\dimen3%
+\setbox5=\vbox{\hrule width\dimen4 height\dimen0 depth0pt}%
+\advance\dimen4 by-\dimen0%
+\setbox2=\vbox{\hrule width\dimen4 height\dimen0 depth0pt}%
+\dimen4=\dimen2\advance\dimen4 by\dimen0%
+\setbox3=\vbox{\hrule width\dimen0 height\dimen4 depth0pt}%
+%
+\setbox0=\vtop{\vskip0pt% (war \vbox und ohne \vskip0pt)
+\hbox{\box9\lower\dimen2\copy3\lower\dimen2\copy5\lower\dimen2\copy3\box7}%
+\kern-\dimen2\nointerlineskip%
+\hbox{\raise\dimen2\box1\raise\dimen2\box2\copy3\copy4\copy3%
+\raise\dimen2\copy5\copy3\box6\copy3\raise\dimen2\copy5\copy3\copy4\copy3%
+\raise\dimen2\box5\box3\box4\box8}}%
+\leavevmode\box0}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% TUM Header, use with \tumheader
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\tumheader{
+%\dimen5=9.1cm% \ / Diese drei Gr\"o{\ss}en
+\dimen5=0.45\textwidth
+
+\hbox to\textwidth{\ABAKUS\hfil\hbox to\dimen5{\vtop{\vskip0pt
+    \hbox to\dimen5
+        {\scriptsize TECHNISCHE\ UNIVERSIT{\kern-.1em}\"A{\kern-.1em}T\ M\"UNCHEN}
+    \vskip2mm
+    \hbox to\dimen5
+        {\small FAKULT{\kern-.1em}\"A{\kern-.1em}T\ F\"UR\ INFORMATIK}
+}}\hfil\TUM{1.5cm}}}
