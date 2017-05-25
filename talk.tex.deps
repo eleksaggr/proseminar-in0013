@@ -8,10 +8,24 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/fonts/tfm/adobe/helvetic/phvr7t.tfm\
     /usr/share/texmf-dist/fonts/tfm/adobe/helvetic/phvr8r.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy5.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam7.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmex10.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmr10.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmr6.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmr8.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmss10.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmsy6.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb\
@@ -86,6 +100,8 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/tex/latex/amscls/amsthm.sty\
     /usr/share/texmf-dist/tex/latex/amsfonts/amsfonts.sty\
     /usr/share/texmf-dist/tex/latex/amsfonts/amssymb.sty\
+    /usr/share/texmf-dist/tex/latex/amsfonts/umsa.fd\
+    /usr/share/texmf-dist/tex/latex/amsfonts/umsb.fd\
     /usr/share/texmf-dist/tex/latex/amsmath/amsbsy.sty\
     /usr/share/texmf-dist/tex/latex/amsmath/amsgen.sty\
     /usr/share/texmf-dist/tex/latex/amsmath/amsmath.sty\
@@ -150,6 +166,7 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/tex/latex/etex-pkg/etex.sty\
     /usr/share/texmf-dist/tex/latex/etoolbox/etoolbox.sty\
     /usr/share/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty\
+    /usr/share/texmf-dist/tex/latex/filehook/filehook-scrlfile.sty\
     /usr/share/texmf-dist/tex/latex/filehook/filehook.sty\
     /usr/share/texmf-dist/tex/latex/float/float.sty\
     /usr/share/texmf-dist/tex/latex/framed/framed.sty\
@@ -167,6 +184,8 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/tex/latex/hyperref/nameref.sty\
     /usr/share/texmf-dist/tex/latex/hyperref/pd1enc.def\
     /usr/share/texmf-dist/tex/latex/ifplatform/ifplatform.sty\
+    /usr/share/texmf-dist/tex/latex/koma-script/scrbase.sty\
+    /usr/share/texmf-dist/tex/latex/koma-script/scrlfile.sty\
     /usr/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg\
     /usr/share/texmf-dist/tex/latex/latexconfig/hyperref.cfg\
     /usr/share/texmf-dist/tex/latex/lineno/lineno.sty\
@@ -177,6 +196,7 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/tex/latex/oberdiek/grfext.sty\
     /usr/share/texmf-dist/tex/latex/oberdiek/kvoptions.sty\
     /usr/share/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty\
+    /usr/share/texmf-dist/tex/latex/oberdiek/transparent.sty\
     /usr/share/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty\
     /usr/share/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty\
     /usr/share/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty\
@@ -192,6 +212,7 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/tex/latex/psnfss/omlphv.fd\
     /usr/share/texmf-dist/tex/latex/psnfss/ot1phv.fd\
     /usr/share/texmf-dist/tex/latex/sansmathaccent/sansmathaccent.sty\
+    /usr/share/texmf-dist/tex/latex/svg/svg.sty\
     /usr/share/texmf-dist/tex/latex/textpos/textpos.sty\
     /usr/share/texmf-dist/tex/latex/tools/array.sty\
     /usr/share/texmf-dist/tex/latex/tools/calc.sty\
@@ -203,6 +224,22 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/web2c/texmf.cnf\
     /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map\
     /var/lib/texmf/web2c/pdftex/pdflatex.fmt\
+    svg-inkscape/mark_sweep_mark_svg-tex.pdf\
+    svg-inkscape/mark_sweep_mark_svg-tex.pdf_tex\
+    svg-inkscape/mark_sweep_setup_svg-tex.pdf\
+    svg-inkscape/mark_sweep_setup_svg-tex.pdf_tex\
+    svg-inkscape/mark_sweep_sweep_svg-tex.pdf\
+    svg-inkscape/mark_sweep_sweep_svg-tex.pdf_tex\
+    svg-inkscape/rc_delete_1_svg-tex.pdf\
+    svg-inkscape/rc_delete_1_svg-tex.pdf_tex\
+    svg-inkscape/rc_delete_2_svg-tex.pdf\
+    svg-inkscape/rc_delete_2_svg-tex.pdf_tex\
+    svg-inkscape/rc_setup_svg-tex.pdf\
+    svg-inkscape/rc_setup_svg-tex.pdf_tex\
+    svg-inkscape/stack_svg-tex.pdf\
+    svg-inkscape/stack_svg-tex.pdf_tex\
+    svg/rc_setup.svg\
+    svg/stack.svg\
     talk.aex\
     talk.tex\
     talk.w18\

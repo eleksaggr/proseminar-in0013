@@ -1,5 +1,7 @@
 \documentclass{beamer}
 
+\graphicspath{{svg/}}
+
 \usefonttheme[onlymath]{serif}
 \usefonttheme{structurebold}
 \usetheme{Boadilla}
@@ -33,7 +35,7 @@
     \pgfimage[height=#3]{#4}
     \end{textblock}
 }
-\usepackage{graphicx,colortbl,etex,helvet,tikz}
+\usepackage{graphicx,svg,colortbl,etex,helvet,tikz,textcomp}
 
 %Source Code highlighting
 \usepackage{minted}
@@ -84,7 +86,7 @@
 				\begin{enumerate}
 					\item Rust's approach
 					\item Stack Allocation
-					\item Heap Allocation with Box\textless T\textgreater
+					\item Heap Allocation with Box$<$T$>$
 					\item Comparison of Stack and Heap allocations
 				\end{enumerate}
 			\end{alertblock}
@@ -92,7 +94,7 @@
 				\begin{enumerate}
 					\item Concept
 					\item Problems 
-					\item Rc\textless T\textgreater in Rust
+					\item Rc$<$T$>$ in Rust
 				\end{enumerate}
 			\end{alertblock}
 			\begin{alertblock}{The 'unsafe' keyword}
@@ -107,12 +109,39 @@
     \end{frame}
 	\begin{frame}
 		\frametitle{Example - Mark \& Sweep}
+		\begin{figure}
+			\centering
+			\def\svgwidth{230pt}
+			\input{svg/mark_sweep_setup.pdf_tex}
+			\caption{A graph-represenation of alive objects.}
+		\end{figure}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Example - Mark \& Sweep}
+		\begin{figure}
+			\centering
+			\def\svgwidth{230pt}
+			\input{svg/mark_sweep_mark.pdf_tex}
+			\caption{The 'Mark' stage of the algorithm.}
+		\end{figure}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Example - Mark \& Sweep}
+		\begin{figure}
+			\centering
+			\def\svgwidth{230pt}
+			\input{svg/mark_sweep_sweep.pdf_tex}
+			\caption{The 'Sweep' stage of the algorithm.}
+		\end{figure}
 	\end{frame}
 	\begin{frame}
 		\frametitle{Memory management in Rust}
 	\end{frame}
 	\begin{frame}
 		\frametitle{Stack Allocation}
+		\begin{figure}
+			\includesvg[width=120pt]{svg/stack}
+		\end{figure}
 	\end{frame}
 	\begin{frame}
 		\frametitle{Workings of the Stack}
@@ -127,7 +156,7 @@
 		\frametitle{Workings of the Heap}
 	\end{frame}
 	\begin{frame}
-		\frametitle{Box\textless T\textgreater  in Rust}
+		\frametitle{Box$<$T$>$ in Rust}
 	\end{frame}
 	\begin{frame}
 		\frametitle{Use cases}
@@ -136,22 +165,43 @@
 		\frametitle{Comparison: Heap vs. Stack}
 	\end{frame}
 	\begin{frame}
-		\frametitle{Reference Counting}
+		\frametitle{Reference Counting - Example}
+		\begin{figure}
+			\def\svgwidth{230pt}
+			\huge
+			\input{svg/rc_setup.pdf_tex}
+		\end{figure}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Reference Counting - Example}
+		\begin{figure}
+			\def\svgwidth{230pt}
+			\huge
+			\input{svg/rc_delete_1.pdf_tex}
+		\end{figure}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Reference Counting - Example}
+		\begin{figure}
+			\def\svgwidth{230pt}
+			\huge
+			\input{svg/rc_delete_2.pdf_tex}
+		\end{figure}
 	\end{frame}
 	\begin{frame}
 		\frametitle{Limitations}
 	\end{frame}
 	\begin{frame}
-		\frametitle{Rc\textless T\textgreater (and Weak\textless T\textgreater) in Rust}
+		\frametitle{Rc$<$T$>$ (and Weak$<$T$>$) in Rust}
 	\end{frame}
 	\begin{frame}
 		\frametitle{Example}
 	\end{frame}
 	\begin{frame}
-		\frametitle{Limitations of Rc\textless T\textgreater}
+		\frametitle{Limitations of Rc$<$T$>$}
 	\end{frame}
 	\begin{frame}
-		\frametitle{Multi-threaded Reference Counting with Arc\textless T\textgreater}
+		\frametitle{Multi-threaded Reference Counting with Arc$<$T$>$}
 	\end{frame}
 	\begin{frame}
 		\frametitle{Example}
