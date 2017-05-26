@@ -11,19 +11,19 @@
 
 \setbeamertemplate{footline}
 {
-  \leavevmode%
-  \hbox{%
-  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
-    \usebeamerfont{author in head/foot}\insertshortauthor
-  \end{beamercolorbox}%
-  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
-    \usebeamerfont{title in head/foot}\insertsection
-  \end{beamercolorbox}%
-  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
-    \usebeamerfont{date in head/foot}\insertsubsection\hspace*{2em}
-    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
-  \end{beamercolorbox}}%
-  \vskip0pt%
+	\leavevmode%
+	\hbox{%
+		\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+			\usebeamerfont{author in head/foot}\insertshortauthor
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+			\usebeamerfont{title in head/foot}\insertsection
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+			\usebeamerfont{date in head/foot}\insertsubsection\hspace*{2em}
+			\insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+		\end{beamercolorbox}}%
+	\vskip0pt%
 }
 
 \usepackage[absolute,overlay]{textpos}
@@ -31,9 +31,9 @@
 \setlength{\TPHorizModule}{.10\textwidth}   % units are 1/10th of a page width
 \setlength{\TPVertModule}{.10\textheight}   % units are 1/10th of a page height
 \newcommand{\absolute}[4]{
-    \begin{textblock}{0.1}(#1,#2) % {horizontale Ausdehnung}(linksoben_x, linkoben_y) ?
-    \pgfimage[height=#3]{#4}
-    \end{textblock}
+	\begin{textblock}{0.1}(#1,#2) % {horizontale Ausdehnung}(linksoben_x, linkoben_y) ?
+		\pgfimage[height=#3]{#4}
+	\end{textblock}
 }
 \usepackage{graphicx,svg,colortbl,etex,helvet,tikz,textcomp}
 
@@ -58,158 +58,229 @@
 \title{Garbage Collection \& Reference Counting}
 \author{Clemens Ruck \& Alex Egger}
 \institute[TUM]{
-\vspace{-19em}\tumheader\vspace{18em}}
+	\vspace{-19em}\tumheader\vspace{18em}}
 \date{Summer Term 2017}
-
-\newmint{java}{}
-\newmint{cpp}{}
-\newmint{llvm}{}
-\newminted{java}{mathescape,bgcolor=almostnogray}
-\newminted{cpp}{mathescape,bgcolor=almostnogray}
-\newminted{llvm}{mathescape,bgcolor=almostnogray}
 
 \begin{document}
 \setbeamertemplate{footline}{}
-
 \maketitle
+\begin{frame}
+	\frametitle{Overview}
+	\begin{textblock}{6}(0,0)
+		\begin{alertblock}{Methods of Memory Management}
+			\begin{enumerate}
+				\item Shortcomings of Manual Memory Management
+				\item Garbage Collection
+				\item Rust's approach
+			\end{enumerate}
+		\end{alertblock}
+		\begin{alertblock}{Memory Management in Rust}
+			\begin{enumerate}
+				\item Stack Allocation
+				\item Heap Allocation with Box$<$T$>$
+				\item Reference counting in Rust
+				\item The 'unsafe' keyword
+				\item The 'unsafe' keyword
+			\end{enumerate}
+		\end{alertblock}
+	\end{textblock}
+\end{frame}
+\begin{frame}
+	\frametitle{Common shortcomings of manual memory management}
+\end{frame}
+\begin{frame}		
+	\frametitle{Garbage Collection}
+\end{frame}
+\begin{frame}
+	\frametitle{Example - Mark \& Sweep}
+	\begin{figure}
+		\centering
+		\def\svgwidth{230pt}
+		\input{svg/mark_sweep_setup.pdf_tex}
+		\caption{A graph-represenation of alive objects.}
+	\end{figure}
+\end{frame}
+\begin{frame}
+	\frametitle{Example - Mark \& Sweep}
+	\begin{figure}
+		\centering
+		\def\svgwidth{230pt}
+		\input{svg/mark_sweep_mark.pdf_tex}
+		\caption{The 'Mark' stage of the algorithm.}
+	\end{figure}
+\end{frame}
+\begin{frame}
+	\frametitle{Example - Mark \& Sweep}
+	\begin{figure}
+		\centering
+		\def\svgwidth{230pt}
+		\input{svg/mark_sweep_sweep.pdf_tex}
+		\caption{The 'Sweep' stage of the algorithm.}
+	\end{figure}
+\end{frame}
+\begin{frame}
+	\frametitle{Memory management in Rust}
+\end{frame}
+\begin{frame}[fragile]
+	\frametitle{Stack Allocation}
+	\begin{columns}[T, c]
+		\begin{column}{0.48\textwidth}
+			\begin{tabular}{| l | l | l |}
+				\hline
+				Address & Name & Value \\ \hline
+				0 & x & 42 \\ \hline
+			\end{tabular}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{minted}[linenos, frame=single]{rust}
+fn main() {
+    let x = 42;
+    other();
+}
 
-    \begin{frame}
-        \frametitle{Overview}
-		\begin{textblock}{6}(0,0)
-			\begin{alertblock}{Methods of Memory Management}
-				\begin{enumerate}
-					\item Shortcomings of Manual Memory Management
-					\item Garbage Collection
-				\end{enumerate}
-			\end{alertblock}
-			\begin{alertblock}{Memory Management in Rust}
-				\begin{enumerate}
-					\item Rust's approach
-					\item Stack Allocation
-					\item Heap Allocation with Box$<$T$>$
-					\item Comparison of Stack and Heap allocations
-				\end{enumerate}
-			\end{alertblock}
-			\begin{alertblock}{Reference Counting}
-				\begin{enumerate}
-					\item Concept
-					\item Problems 
-					\item Rc$<$T$>$ in Rust
-				\end{enumerate}
-			\end{alertblock}
-			\begin{alertblock}{The 'unsafe' keyword}
-			\end{alertblock}
-		\end{textblock}
-    \end{frame}
-    \begin{frame}
-        \frametitle{Common shortcomings of manual memory management}
-    \end{frame}
-    \begin{frame}		
-		\frametitle{Garbage Collection}
-    \end{frame}
-	\begin{frame}
-		\frametitle{Example - Mark \& Sweep}
-		\begin{figure}
-			\centering
-			\def\svgwidth{230pt}
-			\input{svg/mark_sweep_setup.pdf_tex}
-			\caption{A graph-represenation of alive objects.}
-		\end{figure}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Example - Mark \& Sweep}
-		\begin{figure}
-			\centering
-			\def\svgwidth{230pt}
-			\input{svg/mark_sweep_mark.pdf_tex}
-			\caption{The 'Mark' stage of the algorithm.}
-		\end{figure}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Example - Mark \& Sweep}
-		\begin{figure}
-			\centering
-			\def\svgwidth{230pt}
-			\input{svg/mark_sweep_sweep.pdf_tex}
-			\caption{The 'Sweep' stage of the algorithm.}
-		\end{figure}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Memory management in Rust}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Stack Allocation}
-		\begin{figure}
-			\includesvg[width=120pt]{svg/stack}
-		\end{figure}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Workings of the Stack}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Advantages \& Limitations}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Heap Allocation}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Workings of the Heap}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Box$<$T$>$ in Rust}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Use cases}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Comparison: Heap vs. Stack}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Reference Counting - Example}
-		\begin{figure}
-			\def\svgwidth{230pt}
-			\huge
-			\input{svg/rc_setup.pdf_tex}
-		\end{figure}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Reference Counting - Example}
-		\begin{figure}
-			\def\svgwidth{230pt}
-			\huge
-			\input{svg/rc_delete_1.pdf_tex}
-		\end{figure}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Reference Counting - Example}
-		\begin{figure}
-			\def\svgwidth{230pt}
-			\huge
-			\input{svg/rc_delete_2.pdf_tex}
-		\end{figure}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Limitations}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Rc$<$T$>$ (and Weak$<$T$>$) in Rust}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Example}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Limitations of Rc$<$T$>$}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Multi-threaded Reference Counting with Arc$<$T$>$}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Example}
-	\end{frame}
-	\begin{frame}
-		\frametitle{The 'unsafe' keyword}
-	\end{frame}
-	\begin{frame}
-		\frametitle{Use cases}
-	\end{frame}
+fn other() {
+	let y = 27;
+	let z = 99;
+}
+			\end{minted}
+		\end{column}
+	\end{columns}
+\end{frame}
+\begin{frame}[fragile]
+	\frametitle{Stack Allocation}
+	\begin{columns}[T, c]
+		\begin{column}{0.48\textwidth}
+			After line 8:
+			\begin{tabular}{| l | l | l |}
+				\hline
+				Address & Name & Value \\ \hline
+				2 & z & 99 \\ \hline
+				1 & y & 27 \\ \hline
+				0 & x & 42 \\ \hline
+			\end{tabular}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{minted}[linenos, frame=single]{rust}
+fn main() {
+	let x = 42;
+	other();
+}
+
+fn other() {
+	let y = 27;
+	let z = 99;
+}
+			\end{minted}
+		\end{column}
+	\end{columns}
+\end{frame}
+\begin{frame}[fragile]
+	\frametitle{Stack Allocation}
+	\begin{columns}[T, c]
+		\begin{column}{0.48\textwidth}
+			After line 3:
+			\begin{tabular}{| l | l | l |}
+				\hline
+				Address & Name & Value \\ \hline
+				0 & x & 42 \\ \hline
+			\end{tabular}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{minted}[linenos, frame=single]{rust}
+fn main() {
+	let x = 42;
+	other();
+}
+
+fn other() {
+	let y = 27;
+	let z = 99;
+}
+			\end{minted}
+		\end{column}
+	\end{columns}
+\end{frame}
+\begin{frame}
+	\frametitle{Advantages \& Limitations}
+\end{frame}
+\begin{frame}
+	\frametitle{Heap Allocation}
+\end{frame}
+\begin{frame}
+	\frametitle{Workings of the Heap}
+\end{frame}
+\begin{frame}
+	\frametitle{Box$<$T$>$ in Rust}
+\end{frame}
+\begin{frame}
+	\frametitle{Use cases}
+\end{frame}
+\begin{frame}
+	\frametitle{Comparison: Heap vs. Stack}
+\end{frame}
+\begin{frame}
+	\frametitle{Reference Counting - Example}
+	\begin{figure}
+		\def\svgwidth{230pt}
+		\huge
+		\input{svg/rc_setup.pdf_tex}
+	\end{figure}
+\end{frame}
+\begin{frame}
+	\frametitle{Reference Counting - Example}
+	\begin{figure}
+		\def\svgwidth{230pt}
+		\huge
+		\input{svg/rc_delete_1.pdf_tex}
+	\end{figure}
+\end{frame}
+\begin{frame}
+	\frametitle{Reference Counting - Example}
+	\begin{figure}
+		\def\svgwidth{230pt}
+		\huge
+		\input{svg/rc_delete_2.pdf_tex}
+	\end{figure}
+\end{frame}
+\begin{frame}
+	\frametitle{Reference Counting - Bad example}
+	\begin{figure}
+		\def\svgwidth{230pt}
+		\huge
+		\input{svg/rc_delete_bad_1.pdf_tex}
+	\end{figure}
+\end{frame}
+\begin{frame}
+	\frametitle{Reference Counting - Bad example}
+	\begin{figure}
+		\def\svgwidth{230pt}
+		\huge
+		\input{svg/rc_delete_bad_2.pdf_tex}
+	\end{figure}
+\end{frame}
+\begin{frame}
+	\frametitle{Limitations}
+	\attention Reference cycles can never be reclaimed!
+\end{frame}
+\begin{frame}
+	\frametitle{Rc$<$T$>$ (and Weak$<$T$>$) in Rust}
+\end{frame}
+\begin{frame}
+	\frametitle{Example}
+\end{frame}
+\begin{frame}
+	\frametitle{Limitations of Rc$<$T$>$}
+\end{frame}
+\begin{frame}
+	\frametitle{Multi-threaded Reference Counting with Arc$<$T$>$}
+\end{frame}
+\begin{frame}
+	\frametitle{Example}
+\end{frame}
+\begin{frame}
+	\frametitle{The 'unsafe' keyword}
+\end{frame}
+\begin{frame}
+	\frametitle{Use cases}
+\end{frame}
 \end{document}

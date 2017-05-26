@@ -20,6 +20,7 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmr10.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmr12.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmr6.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmr8.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmss10.tfm\
@@ -29,6 +30,7 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb\
+    /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy5.pfb\
     /usr/share/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb\
     /usr/share/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb\
@@ -109,6 +111,9 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/tex/latex/amsmath/amstext.sty\
     /usr/share/texmf-dist/tex/latex/base/ifthen.sty\
     /usr/share/texmf-dist/tex/latex/base/size11.clo\
+    /usr/share/texmf-dist/tex/latex/base/textcomp.sty\
+    /usr/share/texmf-dist/tex/latex/base/ts1cmr.fd\
+    /usr/share/texmf-dist/tex/latex/base/ts1enc.def\
     /usr/share/texmf-dist/tex/latex/beamer/art/beamericonarticle.20.pdf\
     /usr/share/texmf-dist/tex/latex/beamer/art/beamericonarticle.pdf\
     /usr/share/texmf-dist/tex/latex/beamer/art/beamericonbook.20.pdf\
@@ -209,7 +214,6 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty\
     /usr/share/texmf-dist/tex/latex/pgf/utilities/xxcolor.sty\
     /usr/share/texmf-dist/tex/latex/psnfss/helvet.sty\
-    /usr/share/texmf-dist/tex/latex/psnfss/omlphv.fd\
     /usr/share/texmf-dist/tex/latex/psnfss/ot1phv.fd\
     /usr/share/texmf-dist/tex/latex/sansmathaccent/sansmathaccent.sty\
     /usr/share/texmf-dist/tex/latex/svg/svg.sty\
@@ -224,22 +228,22 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/web2c/texmf.cnf\
     /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map\
     /var/lib/texmf/web2c/pdftex/pdflatex.fmt\
-    svg-inkscape/mark_sweep_mark_svg-tex.pdf\
-    svg-inkscape/mark_sweep_mark_svg-tex.pdf_tex\
-    svg-inkscape/mark_sweep_setup_svg-tex.pdf\
-    svg-inkscape/mark_sweep_setup_svg-tex.pdf_tex\
-    svg-inkscape/mark_sweep_sweep_svg-tex.pdf\
-    svg-inkscape/mark_sweep_sweep_svg-tex.pdf_tex\
-    svg-inkscape/rc_delete_1_svg-tex.pdf\
-    svg-inkscape/rc_delete_1_svg-tex.pdf_tex\
-    svg-inkscape/rc_delete_2_svg-tex.pdf\
-    svg-inkscape/rc_delete_2_svg-tex.pdf_tex\
-    svg-inkscape/rc_setup_svg-tex.pdf\
-    svg-inkscape/rc_setup_svg-tex.pdf_tex\
-    svg-inkscape/stack_svg-tex.pdf\
-    svg-inkscape/stack_svg-tex.pdf_tex\
-    svg/rc_setup.svg\
-    svg/stack.svg\
+    _minted-talk/5CB56EE2669928ECDD7AF2939638BFCBA5F2196CD5D5010EC66B1AEADCA83257.pygtex\
+    _minted-talk/CB579E3AC87A1C15D11DBDB0E62FAE31A5F2196CD5D5010EC66B1AEADCA83257.pygtex\
+    _minted-talk/colorful.pygstyle\
+    _minted-talk/default-pyg-prefix.pygstyle\
+    svg/mark_sweep_mark.pdf\
+    svg/mark_sweep_mark.pdf_tex\
+    svg/mark_sweep_setup.pdf\
+    svg/mark_sweep_setup.pdf_tex\
+    svg/mark_sweep_sweep.pdf\
+    svg/mark_sweep_sweep.pdf_tex\
+    svg/rc_delete_1.pdf\
+    svg/rc_delete_1.pdf_tex\
+    svg/rc_delete_2.pdf\
+    svg/rc_delete_2.pdf_tex\
+    svg/rc_setup.pdf\
+    svg/rc_setup.pdf_tex\
     talk.aex\
     talk.tex\
     talk.w18\
