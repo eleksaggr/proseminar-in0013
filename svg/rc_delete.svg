@@ -15,9 +15,19 @@
    version="1.1"
    id="svg6345"
    inkscape:version="0.92.1 r"
-   sodipodi:docname="rc_setup.svg">
+   sodipodi:docname="rc_delete.svg">
   <defs
      id="defs6339">
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7205"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
     <marker
        inkscape:isstock="true"
        style="overflow:visible;"
@@ -29,7 +39,7 @@
       <path
          transform="scale(1.1) rotate(180) translate(1,0)"
          d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
-         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#00ffff;stroke-opacity:1;fill:#00ffff;fill-opacity:1"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#ff0000;stroke-opacity:1;fill:#ff0000;fill-opacity:1"
          id="path6974" />
     </marker>
     <inkscape:path-effect
@@ -109,7 +119,7 @@
        cy="12.1575"
        r="7.2830944" />
     <circle
-       style="fill:none;stroke:#000000;stroke-width:0.26499999;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:none;stroke:#ff0000;stroke-width:0.26499999;stroke-miterlimit:4;stroke-dasharray:2.1199999,0.26499999;stroke-dashoffset:0"
        id="path6890-6"
        cx="17.907059"
        cy="42.489574"
@@ -123,18 +133,15 @@
        inkscape:original-d="m 43.297664,12.491588 c -6.01757,-2.65e-4 -12.035407,-2.65e-4 -18.053505,0" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       style="font-style:normal;font-weight:normal;font-size:10.58333333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.26458332;-inkscape-font-specification:'sans-serif, Normal';font-stretch:normal;font-variant:normal;text-anchor:start;text-align:start;writing-mode:lr;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;"
        x="15.902535"
        y="13.288023"
        id="text7100"><tspan
          sodipodi:role="line"
-         id="tspan7098"
-         x="15.902535"
-         y="13.288023"
-         style="stroke-width:0.26458332">1</tspan></text>
+         id="tspan7348">1</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
        x="16.175179"
        y="43.890385"
        id="text7104"><tspan
@@ -142,7 +149,7 @@
          id="tspan7102"
          x="16.175179"
          y="43.890385"
-         style="stroke-width:0.26458332">0</tspan></text>
+         style="stroke-width:0.26458332;fill:#ff0000;">0</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -160,5 +167,12 @@
        cx="50.775837"
        cy="12.491589"
        r="7.2830949" />
+    <path
+       style="fill:#ff0000;stroke:#ff0000;stroke-width:0.26333535;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.16002409, 0.26333534;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker6976)"
+       d="m 17.772473,35.140574 c 0.04495,-5.056827 0.0899,-10.113396 0.134849,-15.169702"
+       id="path7203"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect7205"
+       inkscape:original-d="m 17.772473,35.140574 c 0.04522,-5.056825 0.09016,-10.113394 0.134849,-15.169702" />
   </g>
 </svg>

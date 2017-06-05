@@ -1,6 +1,6 @@
 %% Creator: Inkscape inkscape 0.92.1, www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
-%% Accompanies image file 'rc_setup.pdf' (pdf, eps, ps)
+%% Accompanies image file 'rc_cycle.pdf' (pdf, eps, ps)
 %%
 %% To include the image in your LaTeX document, write
 %%   \input{<filename>.pdf_tex}
@@ -36,7 +36,7 @@
   }%
   \providecommand\rotatebox[2]{#2}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{136.15952563bp}%
+    \setlength{\unitlength}{146.16760558bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -48,11 +48,7 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.94023425)%
-    \put(0,0){\includegraphics[width=\unitlength,page=1]{rc_setup.pdf}}%
-    \put(0.11960594,0.76231637){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{1}}}%
-    \put(0.12528198,0.12521917){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0}}}%
-    \put(0.79854621,0.75686411){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=2]{rc_setup.pdf}}%
+  \begin{picture}(1,0.4247654)%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{rc_cycle.pdf}}%
   \end{picture}%
 \endgroup%

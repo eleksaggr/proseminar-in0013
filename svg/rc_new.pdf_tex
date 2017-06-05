@@ -1,6 +1,6 @@
 %% Creator: Inkscape inkscape 0.92.1, www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
-%% Accompanies image file 'rc_setup.pdf' (pdf, eps, ps)
+%% Accompanies image file 'rc_new.pdf' (pdf, eps, ps)
 %%
 %% To include the image in your LaTeX document, write
 %%   \input{<filename>.pdf_tex}
@@ -49,10 +49,10 @@
   \global\let\svgscale\undefined%
   \makeatother%
   \begin{picture}(1,0.94023425)%
-    \put(0,0){\includegraphics[width=\unitlength,page=1]{rc_setup.pdf}}%
-    \put(0.11960594,0.76231637){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{1}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{rc_new.pdf}}%
+    \put(0.11960594,0.76231637){\color[rgb]{1,0,0}\makebox(0,0)[lb]{\smash{2}}}%
     \put(0.12528198,0.12521917){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0}}}%
     \put(0.79854621,0.75686411){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=2]{rc_setup.pdf}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{rc_new.pdf}}%
   \end{picture}%
 \endgroup%

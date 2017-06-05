@@ -30,6 +30,7 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb\
+    /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy5.pfb\
     /usr/share/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb\
@@ -228,20 +229,37 @@ talk.pdf talk.tex.deps :\
     /usr/share/texmf-dist/web2c/texmf.cnf\
     /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map\
     /var/lib/texmf/web2c/pdftex/pdflatex.fmt\
-    _minted-talk/5CB56EE2669928ECDD7AF2939638BFCBA5F2196CD5D5010EC66B1AEADCA83257.pygtex\
-    _minted-talk/CB579E3AC87A1C15D11DBDB0E62FAE31A5F2196CD5D5010EC66B1AEADCA83257.pygtex\
+    _minted-talk/02F1041DB7FAEF168600916AF44A65DFA5F2196CD5D5010EC66B1AEADCA83257.pygtex\
+    _minted-talk/069CECE2D3279D6479A0000CEE8310CF9A1D00D02DA58B6E9CF86E4A37B7E762.pygtex\
+    _minted-talk/11A3FCC470459461C0AFB5F5CDDEDC37A5F2196CD5D5010EC66B1AEADCA83257.pygtex\
+    _minted-talk/42932560EAFA4F002BD53F45C315EE1E9A1D00D02DA58B6E9CF86E4A37B7E762.pygtex\
+    _minted-talk/6BD3D9F03D06313FB98BCBC64FD313FAA5F2196CD5D5010EC66B1AEADCA83257.pygtex\
+    _minted-talk/74A4FB6CEA1779168C47B363F749F99CA5F2196CD5D5010EC66B1AEADCA83257.pygtex\
+    _minted-talk/89A357442DB37CD98B4D1A52D6983ECB9A1D00D02DA58B6E9CF86E4A37B7E762.pygtex\
+    _minted-talk/B518A9D4C3F0A41BD6BDB88F51CE7638A5F2196CD5D5010EC66B1AEADCA83257.pygtex\
+    _minted-talk/C5997FB93C33E4E10233350739BD3219A5F2196CD5D5010EC66B1AEADCA83257.pygtex\
     _minted-talk/colorful.pygstyle\
     _minted-talk/default-pyg-prefix.pygstyle\
+    svg/attention.pdf\
+    svg/attention.pdf_tex\
     svg/mark_sweep_mark.pdf\
     svg/mark_sweep_mark.pdf_tex\
     svg/mark_sweep_setup.pdf\
     svg/mark_sweep_setup.pdf_tex\
     svg/mark_sweep_sweep.pdf\
     svg/mark_sweep_sweep.pdf_tex\
-    svg/rc_delete_1.pdf\
-    svg/rc_delete_1.pdf_tex\
-    svg/rc_delete_2.pdf\
-    svg/rc_delete_2.pdf_tex\
+    svg/rc_cycle.pdf\
+    svg/rc_cycle.pdf_tex\
+    svg/rc_delete.pdf\
+    svg/rc_delete.pdf_tex\
+    svg/rc_delete_bad.pdf\
+    svg/rc_delete_bad.pdf_tex\
+    svg/rc_delete_bad_1.pdf\
+    svg/rc_delete_bad_1.pdf_tex\
+    svg/rc_delete_bad_2.pdf\
+    svg/rc_delete_bad_2.pdf_tex\
+    svg/rc_new.pdf\
+    svg/rc_new.pdf_tex\
     svg/rc_setup.pdf\
     svg/rc_setup.pdf_tex\
     talk.aex\
