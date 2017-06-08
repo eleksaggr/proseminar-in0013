@@ -51,8 +51,8 @@
   \begin{picture}(1,0.94023425)%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{rc_setup.pdf}}%
     \put(0.11960594,0.76231637){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{1}}}%
-    \put(0.12528198,0.12521917){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0}}}%
-    \put(0.79854621,0.75686411){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0}}}%
+    \put(0.12528198,0.12521917){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Y}}}%
+    \put(0.79854621,0.75686411){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{X}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{rc_setup.pdf}}%
   \end{picture}%
 \endgroup%

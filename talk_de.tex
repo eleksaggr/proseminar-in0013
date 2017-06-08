@@ -27,6 +27,10 @@
 	\vskip0pt%
 }
 
+% \makeatletter
+% \renewcommand{\fnum@figure}{Grafik \thefigure}
+% \makeatother
+
 \usepackage[absolute,overlay]{textpos}
 \textblockorigin{1em}{2em} % coordinates of zero/zero
 \setlength{\TPHorizModule}{.10\textwidth}   % units are 1/10th of a page width
@@ -57,49 +61,49 @@
 
 % title
 \title{Garbage Collection \& Reference Counting}
-\author{Memory management in Rust}
+\author{Memory-Management in Rust}
 \institute[TUM]{
-	\vspace{-15em}\tumheader\vspace{18em}}
+	\vspace{-15em}\tumheader\vspace{18em}
+}
 \date{Clemens Ruck \& Alex Egger \\ Summer Term 2017}
 
 \begin{document}
-\setbeamertemplate{footline}{}
 \maketitle
 \begin{frame}
-	\frametitle{Overview}
+	\frametitle{Inhalt}
 	\begin{textblock}{6}(0,0)
-		\begin{alertblock}{Methods of Memory Management}
+		\begin{alertblock}{Arten des Memory-Managements}
 			\begin{enumerate}
-				\item Problems of Manual Memory Management
+				\item Probleme bei manuellem Memory-Management
 				\item Garbage Collection
-				\item Rust's approach
+				\item Rust's Ansatz
 			\end{enumerate}
 		\end{alertblock}
 		\begin{alertblock}{Memory Management in Rust}
 			\begin{enumerate}
-				\item Stack Allocation
-				\item Heap Allocation
+				\item Stack-Allokation
+				\item Heap-Allokation
 				\item Reference Counting in Rust
-				\item The 'unsafe' keyword
+				\item 'unsafe' und Raw Pointer
 			\end{enumerate}
 		\end{alertblock}
 	\end{textblock}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Manual memory management}
-	To dynamically allocate memory in C:
+	\frametitle{Manuelles Memory-Management}
+	Dynamisch Speicher reservieren in C:
 	\begin{minted}[tabsize=4, frame=single]{c}
 void *malloc(size_t size);
 	\end{minted}
-	and to free it:
+	Speicher freigeben:
 	\begin{minted}[tabsize=4, frame=single]{c}
 void free(void *ptr);
 	\end{minted}
 	\vspace{1cm}
-	\attention It is easy to forget if and when memory was freed, which leads to many avoidable bugs!
+	\attention Es ist leicht zu vergessen, wann und ob Speicher bereits freigegeben wurde, was zu unnötigen Bugs führen kann!
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Problems - Memory Leaks}
+	\frametitle{Probleme - Memory Leaks}
 	\begin{minted}[tabsize=4, frame=single]{c}
 int main(void) {
 	while(1) {
@@ -113,9 +117,9 @@ int main(void) {
 
 		// Do something with allocated memory.
 
-		// Memory is never freed, and can never be 
+		// Memory is never freed, and can never be
 		// reclaimed by the system.
-	}
+		}
 	return 0;
 }
 	\end{minted}
@@ -129,7 +133,7 @@ int main(void) {
 
 % 	do_something(c);
 
-% 	// Do something again, but the memory was 
+% 	// Do something again, but the memory was
 % 	// already freed!
 % 	do_something(c);
 % }
@@ -143,16 +147,16 @@ int main(void) {
 % 	\end{minted}
 % \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Problems - Use after Free}
+	\frametitle{Probleme - Use after Free}
 	\begin{minted}[frame=single, tabsize=4]{c}
 int main(void) {
-	// Allocate memory, what a surprise.
+	// Allocate memory.
 	char *c = malloc(10);
 
 	// Do something and then free the memory.
 	free(c);
 
-	// The memory now doesn't belong to us anymore, so 
+	// The memory now doesn't belong to us anymore, so
 	// this will result in a segmentation fault.
 	(*c)++;
 
@@ -162,63 +166,64 @@ int main(void) {
 \end{frame}
 \begin{frame}
 	\frametitle{Garbage Collection}
-	\textbf{Garbage Collection} is a form of automatic memory management. It attempts to reclaim memory used by objects that are no longer in use.
+	\textbf{Garbage Collection} ist eine Form des automatischen Memory-Managements. Hierbei wird versucht Speicher freizugeben, der von Objekten benutzt wird, deren Lebenszeit abgelaufen ist.
 \end{frame}
 \begin{frame}
-	\frametitle{Example - Mark \& Sweep}
+	\frametitle{Beispiel - Mark \& Sweep}
 	\begin{figure}
 		\centering
 		\def\svgwidth{230pt}
 		\input{svg/mark_sweep_setup.pdf_tex}
-		\caption{A graph-represenation of alive objects.}
+		\caption{Eine Graphen-Darstellung von lebenden Objekten.}
 	\end{figure}
 \end{frame}
 \begin{frame}
-	\frametitle{Example - Mark \& Sweep}
+	\frametitle{Beispiel - Mark \& Sweep}
 	\begin{figure}
 		\centering
 		\def\svgwidth{230pt}
 		\input{svg/mark_sweep_mark.pdf_tex}
-		\caption{The 'Mark' stage of the algorithm.}
+		\caption{Die 'Mark'-Phase des Algorithmus.}
 	\end{figure}
 \end{frame}
 \begin{frame}
-	\frametitle{Example - Mark \& Sweep}
+	\frametitle{Beispiel - Mark \& Sweep}
 	\begin{figure}
 		\centering
 		\def\svgwidth{230pt}
 		\input{svg/mark_sweep_sweep.pdf_tex}
-		\caption{The 'Sweep' stage of the algorithm.}
+		\caption{Die 'Sweep'-Phase des Algorithmus.}
 	\end{figure}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Memory management in Rust}
-	Values are stack-allocated per default:
+	\frametitle{Memory-Management in Rust}
+	In Rust werden Variablen standardmäßig auf dem Stack allokiert:
 	\begin{minted}[tabsize=4, frame=single]{rust}
-let x = 12; // Allocated on the stack.
+let x = 12; // Auf dem Stack.
 	\end{minted}
 	\vspace{1em}
-	To allocate on the heap use \mintinline{rust}{Box<T>}:
+	Um Speicher auf dem Heap zu reservieren, benutzt man \mintinline{rust}{Box<T>}:
 	\begin{minted}[tabsize=4, frame=single]{rust}
-let y = Box::new(56); // On the heap.
+let y = Box::new(56); // Auf dem Heap.
 	\end{minted}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Stack Allocation}
+	\frametitle{Variablen auf dem Stack}
 	\begin{columns}[T, c]
 		\begin{column}{0.48\textwidth}
-			After line 2: \\~\\
 			\begin{tabular}{| l | l | l |}
 				\hline
-				Address & Name & Value \\ \hline
+				Adresse & Name & Wert\\ \hline
 				0 & x & 42 \\ \hline
 			\end{tabular}
 		\end{column}
 		\begin{column}{0.48\textwidth}
-			\begin{minted}[linenos, tabsize=4, frame=single]{rust}
+			\begin{minted}[escapeinside=||, linenos, tabsize=4, frame=single]{rust}
 fn main() {
-    let x = 42;
+	|\colorbox{yellow}{let x = 42;}|
     other();
+
+	//...
 }
 
 fn other() {
@@ -230,50 +235,53 @@ fn other() {
 	\end{columns}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Stack Allocation}
+	\frametitle{Variablen auf dem Stack}
 	\begin{columns}[T, c]
 		\begin{column}{0.48\textwidth}
-			After line 8: \\~\\
 			\begin{tabular}{| l | l | l |}
 				\hline
-				Address & Name & Value \\ \hline
+				Adresse & Name & Wert \\ \hline
 				2 & z & 99 \\ \hline
 				1 & y & 27 \\ \hline
 				0 & x & 42 \\ \hline
 			\end{tabular}
 		\end{column}
 		\begin{column}{0.48\textwidth}
-			\begin{minted}[linenos,tabsize=4,frame=single]{rust}
+			\begin{minted}[escapeinside=||, linenos,tabsize=4,frame=single]{rust}
 fn main() {
 	let x = 42;
 	other();
+
+	//...
 }
 
 fn other() {
 	let y = 27;
-	let z = 99;
+	|\colorbox{yellow}{let z = 99;}|
 }
 			\end{minted}
 		\end{column}
 	\end{columns}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Stack Allocation}
+	\frametitle{Variablen auf dem Stack}
 	\begin{columns}[T, c]
 		\begin{column}{0.48\textwidth}
-			After line 3: \\~\\
 			\begin{tabular}{| l | l | l |}
 				\hline
-				Address & Name & Value \\ \hline
+				Adresse & Name & Wert \\ \hline
 				0 & x & 42 \\ \hline
 			\end{tabular}
 		\end{column}
 		\begin{column}{0.48\textwidth}
-			\begin{minted}[linenos,tabsize=4,frame=single]{rust}
+			\begin{minted}[escapeinside=||, linenos,tabsize=4,frame=single]{rust}
 fn main() {
 	let x = 42;
 	other();
+
+	|\colorbox{yellow}{\/\/...}|
 }
+
 
 fn other() {
 	let y = 27;
@@ -284,60 +292,60 @@ fn other() {
 	\end{columns}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Heap Allocation}
+	\frametitle{Speicherreservierung auf dem Heap}
 	\begin{columns}[T, c]
 		\begin{column}{0.48\textwidth}
 			\begin{tabular}{| l | l | l |}
 				\hline
-				Adress & Name & Value  \\ \hline
+				Adresse & Name & Wert \\ \hline
 				1 & y & ??? \\ \hline
 				0 & x & 42 \\ \hline
 			\end{tabular}
 		\end{column}
 		\begin{column}{0.48\textwidth}
-			\begin{minted}[linenos, tabsize=4, frame=single]{rust}
+			\begin{minted}[escapeinside=||, linenos, tabsize=4, frame=single]{rust}
 fn main() {
 	let x = 42;
-	let y = Box::new(39);
+	|\colorbox{yellow}{let y = Box::new(39);}|
 }
 			\end{minted}
 		\end{column}
 	\end{columns}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Heap Allocation}
+	\frametitle{Speicherreservierung auf dem Heap}
 	\begin{columns}[T, c]
 		\begin{column}{0.48\textwidth}
 			\begin{tabular}{| l | l | l |}
 				\hline
-				Adress & Name & Value  \\ \hline
-				ffff & & 39 \\ \hline
-				&   & \\ \hline
-				1 & y & \\ \hline
-				0 & x & $->$ ffff \\ \hline
+				Adresse & Name & Wert \\ \hline
+				0xffff & & 39 \\ \hline
+				... &   & \\ \hline
+				1 & y & $->$ ffff \\ \hline
+				0 & x & 42 \\ \hline
 			\end{tabular}
 		\end{column}
 		\begin{column}{0.48\textwidth}
-			\begin{minted}[linenos, tabsize=4, frame=single]{rust}
+			\begin{minted}[escapeinside=||, linenos, tabsize=4, frame=single]{rust}
 fn main() {
 	let x = 42;
-	let y = Box::new(39);
+	|\colorbox{yellow}{let y = Box::new(39);}|
 }
 			\end{minted}
 		\end{column}
 	\end{columns}
 \end{frame}
 \begin{frame}
-	\frametitle{Comparison: Heap vs. Stack}
+	\frametitle{Vergleich: Heap \& Stack}
 	\begin{enumerate}
-		\item Managing the Stack is trivial
-		\item Managing the Heap is non-trivial
-		\item Having stack-allocation as the default allows easier reasoning about the lifetimes of objects
+		\item Den Stack zu verwalten ist trivial
+		\item Den Heap zu verwalten ist aufwendig (z.B. wegen Fragmentierung)
+		\item Standardmäßig auf dem Stack zu arbeiten, lässt einfacher über die Lebenszeit von Variablen nachdenken
 	\end{enumerate}
 \end{frame}
 \begin{frame}
 	\frametitle{Reference Counting}
-	References can be represented as a directed graph, where the vertices are objects and there is an edge between the nodes if one holds a reference to the other.
+	Referenzen können als gerichteter Graph dargestellt werden, wobei die Knoten Objekte darstellen und zwischen zwei Knoten eine gerichtete Kante besteht, falls eines eine Referenz auf das andere hält.
 	\begin{figure}
 		\def\svgwidth{120pt}
 		\LARGE
@@ -346,7 +354,7 @@ fn main() {
 \end{frame}
 \begin{frame}
 	\frametitle{Reference Counting}
-	Everytime a new reference to an object is created, the \textbf{reference counter} is incremented.
+	Wenn eine neue Referenz auf ein Objekt erstellt wird, wird der \textbf{Reference Counter} erhöht.
 	\begin{figure}
 		\def\svgwidth{120pt}
 		\LARGE
@@ -355,7 +363,7 @@ fn main() {
 \end{frame}
 \begin{frame}
 	\frametitle{Reference Counting}
-	When an object is freed all references it holds are freed too, and the respective reference counters are decremented.
+	Wenn ein Objekt freigegeben wird, werden alle Referenzen die es hält freigegeben und deren jeweilige Referenzzähler dekrementiert.
 	\begin{figure}
 		\def\svgwidth{120pt}
 		\LARGE
@@ -364,7 +372,7 @@ fn main() {
 \end{frame}
 \begin{frame}
 	\frametitle{Reference Counting}
-	Objects can only be freed, when their \textbf{reference count is 0!} Otherwise we'll end up with dangling references.
+	Objekte können nur freigegeben werden, wenn ihr \textbf{Referenzzähler auf 0} steht! Sonst werden die Referenzen, die noch auf das Objekt zeigen, ungültig.
 	\begin{figure}
 		\def\svgwidth{120pt}
 		\LARGE
@@ -372,32 +380,32 @@ fn main() {
 	\end{figure}
 \end{frame}
 \begin{frame}
-	\frametitle{Limitations}
-	\attention Reference cycles can never be reclaimed!
+	\frametitle{Limiterungen}
+	\attention Zyklische Referenzen können nicht freigegeben werden!
 	\begin{figure}
 		\def\svgwidth{100pt}
 		\input{svg/rc_cycle.pdf_tex}
 	\end{figure}
-	This can be solved by the use of a dedicated incremental garbage collector, that specifically targets reference cycles.
-	An other approach is to simply disallow cycles in your data structure.
+	Dieses Problem kann durch den Einsatz eines Incremental Garbage Collectors gelöst werden, der spezifisch auf zyklische Referenzen ausgelegt ist.
+	Eine andere Lösung ist es, zyklische Referenzen in den eigenen Datenstrukturen zu verbieten.
 \end{frame}
 \begin{frame}[fragile]
 	\frametitle{\mintinline{rust}{Rc<T>} in Rust}
-	In Rust we can make use of reference counting with the \mintinline{rust}{Rc<T>} struct.
+	In Rust können wir Reference Counting benutzen, indem wir das \mintinline{rust}{Rc<T>} Struct benutzen.
 	\\
-	To use it simply call \mintinline{rust}{Rc::new}:
+	Um es zu nutzen, muss zuerst \mintinline{rust}{Rc::new} aufgerufen werden:
 	\begin{minted}[tabsize=4, frame=single]{rust}
-		let t = ...;
-		let rc_t = Rc::new(t);
+let t = ...;
+let rc_t = Rc::new(t);
 	\end{minted}
-	To create a new reference and increment the reference counter, use \mintinline{rust}{Rc.clone()}:
+	Um eine neue Referenz zu erstellen und den Referenzzähler zu erhöhen, wird \mintinline{rust}{Rc.clone()} benutzt:
 	\begin{minted}[tabsize=4,frame=single]{rust}
-		let second_rc_t = rc_t.clone();
+let second_rc_t = rc_t.clone();
 	\end{minted}
-	\attention To use reference counting with multi-threaded applications, use \mintinline{rust}{Arc<T>}, which is slightly slower.
+	\attention Um Reference Counting in Szenarien mit multiplen Threads zu benutzen, muss man \mintinline{rust}{Arc<T>} benutzen, was inperformanter ist.
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Reference Counting - Example}
+	\frametitle{Reference Counting - Beispiel}
 	\begin{minted}[tabsize=4, frame=single]{rust}
 struct Owner {
 	name: String,
@@ -411,7 +419,7 @@ struct Car {
 	\end{minted}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Reference Counting - Example}
+	\frametitle{Reference Counting - Beispiel}
 	\begin{minted}[tabsize=4, frame=single]{rust}
 fn main() {
 	let owner = Rc::new(Owner{
@@ -433,39 +441,39 @@ fn main() {
 	\end{minted}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Reference Counting - Example}
+	\frametitle{Reference Counting - Beispiel}
 	\begin{minted}[tabsize=4, frame=single]{rust}
 fn main() {
 	// ...
 
-	// Drop the local variable 'owner'
+	// Drop die lokale Variable 'owner'
 	drop(owner);
 
-	// This will still work,
-	// since the owner binding survives using Rc!
+	// Funktionert immer noch, da es immernoc
+	// Referenzen auf owner gibt!
 	println!("{}", car.owner.name);
 }
 	\end{minted}
 \end{frame}
 
 \begin{frame}
-	\frametitle{The 'unsafe' keyword}
-	The \mintinline{rust}{unsafe} keyword allows:
+	\frametitle{'unsafe'}
+	Das \mintinline{rust}{unsafe} Keyword erlaubt:
 	\begin{enumerate}
-		\item Accessing or updating of a static mutable variable
-		\item Dereferencing of a raw pointer
-		\item Calling of other unsafe functions
+		\item Das Benutzen und Updaten von static mutable Variablen.
+		\item Das Dereferenzieren von Raw Pointern.
+		\item Das Aufrufen von als 'unsafe' markierten Funktionen.
 	\end{enumerate}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{Raw Pointers}
-	Two types of raw pointers:
+	\frametitle{Raw Pointer}
+	Es gibt zwei Typen von Raw Pointern:
 	\begin{enumerate}
 		\item \mintinline{rust}{*const T}
 		\item \mintinline{rust}{*mut T}
 	\end{enumerate}
 	\vspace{1cm}
-	Raw pointers have no lifetime or ownership. The only guarantee provided is they cannot be dereferenced except in code marked as \mintinline{rust}{unsafe}.
+	Raw Pointer sind einfache C-artige Zeiger auf einen Speicherbereich. Dabei unterliegen sie nicht den üblichen Ownership- oder Lifetimeregeln. Sie können nur in "unsafen" Codebereichen dereferenziert werden.
 \end{frame}
 \begin{frame}[fragile]
 	\frametitle{Example}
@@ -473,16 +481,15 @@ fn main() {
 fn main() {
 	let i: u32 = 77;
 
-	// Creating a raw pointer in safe code is
-	// perfectly acceptable.
+	// Einen Raw Pointer erstellen,
+	// kann man auch in safem Code.
 	let x = &i as *const u32;
 
-	// Dereferencing a raw pointer in
-	// safe code is not allowed!
+	// Derefenzieren führt allerdings zu einem Fehler.
 	let y = *x;
 
-	// Once we marked the code as unsafe,
-	// the compiler let's us do it.
+	// Wenn der Codeblock als unsafe markiert ist,
+	// ist auch derefenzieren erlaubt.
 	unsafe {
 		let z = *x;
 	}
