@@ -22,21 +22,21 @@
 
 \title{Proseminar ``The Rust Programming Language'' \\
        Summer Term 2017 \\
-       {\bf Garbage Collection and Reference Counting}
+       {\bf Garbage Collection \& Reference Counting}
 }
 
 % Date of your talk
-\date{9.6.2017}
+\date{\today}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-The main focus of this paper is to give a broad overview
-of existing memory management techniques, and more specifically
-to compare them to the approach chosen by the Rust language.
-Further it will cover the subject of how to use memory effectively in the Rust language.
+This paper aims to give a broad overview of existing memory management techniques
+and a quick introduction to the technique employed by the Rust programming language.
+Further it will demonstrate the different possibilities when working with memory in
+the Rust language.
 \end{abstract}
 
 % \section defines numbered parts of the paper with titles
@@ -46,83 +46,131 @@ Further it will cover the subject of how to use memory effectively in the Rust l
 % Use labels to be able to refer to this position from somewhere else
 \label{introduction}
 
-
-The introduction of a scientific work usually consists of the following
-parts:
+When talking about memory management one must firstly think about
+where in memory a given variable will be stored. There are different
+possibilities, that can be generally described by the following categories:
 \begin{itemize}
-	\item motivation,
-	\item issues or drawbacks with existing solutions of a problem at hand,
-	\item overview of new contribution and rest of the paper.
+        \item Static memory
+        \item Stack
+        \item Heap
 \end{itemize}
-In the motivation you should explain why a given topic is interesting
-at all, and also, why solutions are important from a scientific point
-of view. There already may be a lot of existing solutions. Thus, it
-is important for the reader to understand the issues with these solutions,
-and why they are not enough for e.g. a specific scenario. Often, concrete
-examples are quite useful in providing a motivation, as well as providing
-a running example, that can be picked up later on in the main part.
-\begin{figure}
-\begin{cppcode}
-#include <iostream>
-void main(void){
-  std::cout << "simple code example";
-}
-\end{cppcode}
-
-\vspace{-2em}
-\caption{A very simple C++ code fragment}
-\label{introexample}
-\end{figure}
-After the motivational example, you should explain the basic idea of your new
-contribution to solve the problem at hand, and give a short overview
-(only a slight hint) of how this works.
-
-\subsection*{Related Work}
-
-Here, you elaborate on how this approach differs from other existing solutions -- if not in general, then illustrate the scenario, in which the approach is beneficial. This subsection also offers room for introducing related or alternative approaches to this approach, and establishes a kind of state of the art. This might even incorporate solution approaches in other fields, if the setting is comparable to this thesis. Translated to topics in programming languages, this would mean e.g. similar solutions in other programming languages. Ultimately, however, this should culminate in explicitely formulating the \emph{thesis statement} \cite{thesis-statement}:
-\begin{itemize}
-\item what is the unique core contribution of this specific approach
-\item in not more than 3 itemss
-\item this should be thought of the basic information, that the reader
-  should take away from your paper
-\end{itemize}
-This concept of unique core contributions is in seminar papers, what in
-research papers is usually the \emph{Research Question} \cite{constructing-research-questions}. As the seminar paper is usually meant to be a piece of
-work, that teaches students to write academic papers, the usual guides
-for general scientific writing like the work of Turabian \cite{manual-for-writers} or the more computer science centric approach of Zobel
-\cite{writing-for-computer-science} can also be applied to seminar papers.
+\textit{Statically allocated} variables are simply hard-coded into the binary file of the program.
+The exact section they are located in is dependent upon the file format chosen.
 
 
-Finally, a short overview to the structure of the rest of the work
-should be provided, which may indicate the most important points.
-As any idea or solution proposed must be shown to be valid and useful, every scientific paper
-must have some evaluation and/or discussion. It may to useful to select
-important results, and mention them already as last part of the
-introduction, as motivation for the reader to read on. In summary,
-a good introduction creates interest for the topic and
-proposed new contributions that the reader cannot wait to read on.
+Variables that are local to a called function are usually stored on the \textit{stack}.
+The stack is a region in memory that emulates functionality of the stack data structure.
+It is simply a contiguous region of memory and a pointer to show where the last variable
+was placed. Since operating on the stack is such a common occurance, most CPUs have commands
+dedicated to pushing data to the stack and poping data from the stack, all while keeping the
+stack pointer at the correct location. This makes managing the stack trivial and fast.
+% Variables that are stored in static memory are called \textit{statically allocated}.
+% The values of these variables are hard-coded into a section of the executable file, that
+% is generated from the program. The exact section depends upon the selected executable
+% file format. The simple example in figure \ref{static_example} shows a C program that 
+% allocates a string in static memory and then prints that same string to the standard output.
+% To assure the string was actually hard-coded into the binary file, we'll take a look at the \mintinline{text}{.rodata}
+% section of the executable. To do this one may call \mintinline{text}{objdump -s -j .rodata static} in a shell of choice.
+% The important part of the output is highlighted in figure \ref{static_disassemble}. One can easily recognize the encoded string "Hello, World!" in the output, which proves it is hard-coded.
 
-% free floating figure using width of one column.
-\begin{figure}
-\centerline{
-\includegraphics[width=0.9\columnwidth,interpolate]{Figures/TUM-Logo-102.png}
-}
-\caption{The caption explaining what can be seen in the image/figure.
-Readers often read captions first if they do not have much time. Thus,
-it is important to find a good short explanation.}
-% A label to allow refering to this figure in the text.
-\label{TUM}
-\end{figure}
 
-% free floating figure using width of full page, to be put on [t]op.
-\begin{figure*}[t]
-\centerline{
-\includegraphics[width=0.9\textwidth]{Figures/test.pdf}
-}
-\caption{A nice caption. The larger width allows for more text without
-taking too much space.}
-\label{Fig2}
-\end{figure*}
+
+% Variables that are local to a called function are usually stored on the stack. 
+
+% \begin{figure}
+% \inputminted[linenos,frame=single]{c}{examples/static.c}
+% \vspace{-2em}
+% \caption{A simple program that prints the statically allocated string "Hello, World!" to the standard output.}
+% \label{static_example}
+% \end{figure}
+
+% \begin{figure}
+% \begin{minted}[linenos,frame=single,breaklines]{text}
+%  Contents of section .rodata:
+%  400570 01000200 48656c6c 6f2c2057 6f726c64  ....Hello, World
+%  400580 2100                                 !.
+% \end{minted}
+% \vspace{-2em}
+%     \caption{The \mintinline{text}{.rodata} section of the program in figure \ref{static_example}.}
+% \label{static_disassemble}
+% \end{figure}
+
+% The introduction of a scientific work usually consists of the following
+% parts:
+% \begin{itemize}
+% 	\item motivation,
+% 	\item issues or drawbacks with existing solutions of a problem at hand,
+% 	\item overview of new contribution and rest of the paper.
+% \end{itemize}
+% In the motivation you should explain why a given topic is interesting
+% at all, and also, why solutions are important from a scientific point
+% of view. There already may be a lot of existing solutions. Thus, it
+% is important for the reader to understand the issues with these solutions,
+% and why they are not enough for e.g. a specific scenario. Often, concrete
+% examples are quite useful in providing a motivation, as well as providing
+% a running example, that can be picked up later on in the main part.
+% \begin{figure}
+% \begin{cppcode}
+% #include <iostream>
+% void main(void){
+%   std::cout << "simple code example";
+% }
+% \end{cppcode}
+
+% \vspace{-2em}
+% \caption{A very simple C++ code fragment}
+% \label{introexample}
+% \end{figure}
+% After the motivational example, you should explain the basic idea of your new
+% contribution to solve the problem at hand, and give a short overview
+% (only a slight hint) of how this works.
+
+% \subsection*{Related Work}
+
+% Here, you elaborate on how this approach differs from other existing solutions -- if not in general, then illustrate the scenario, in which the approach is beneficial. This subsection also offers room for introducing related or alternative approaches to this approach, and establishes a kind of state of the art. This might even incorporate solution approaches in other fields, if the setting is comparable to this thesis. Translated to topics in programming languages, this would mean e.g. similar solutions in other programming languages. Ultimately, however, this should culminate in explicitely formulating the \emph{thesis statement} \cite{thesis-statement}:
+% \begin{itemize}
+% \item what is the unique core contribution of this specific approach
+% \item in not more than 3 itemss
+% \item this should be thought of the basic information, that the reader
+%   should take away from your paper
+% \end{itemize}
+% This concept of unique core contributions is in seminar papers, what in
+% research papers is usually the \emph{Research Question} \cite{constructing-research-questions}. As the seminar paper is usually meant to be a piece of
+% work, that teaches students to write academic papers, the usual guides
+% for general scientific writing like the work of Turabian \cite{manual-for-writers} or the more computer science centric approach of Zobel
+% \cite{writing-for-computer-science} can also be applied to seminar papers.
+
+
+% Finally, a short overview to the structure of the rest of the work
+% should be provided, which may indicate the most important points.
+% As any idea or solution proposed must be shown to be valid and useful, every scientific paper
+% must have some evaluation and/or discussion. It may to useful to select
+% important results, and mention them already as last part of the
+% introduction, as motivation for the reader to read on. In summary,
+% a good introduction creates interest for the topic and
+% proposed new contributions that the reader cannot wait to read on.
+
+% % free floating figure using width of one column.
+% \begin{figure}
+% \centerline{
+% \includegraphics[width=0.9\columnwidth,interpolate]{Figures/TUM-Logo-102.png}
+% }
+% \caption{The caption explaining what can be seen in the image/figure.
+% Readers often read captions first if they do not have much time. Thus,
+% it is important to find a good short explanation.}
+% % A label to allow refering to this figure in the text.
+% \label{TUM}
+% \end{figure}
+
+% % free floating figure using width of full page, to be put on [t]op.
+% \begin{figure*}[t]
+% \centerline{
+% \includegraphics[width=0.9\textwidth]{Figures/test.pdf}
+% }
+% \caption{A nice caption. The larger width allows for more text without
+% taking too much space.}
+% \label{Fig2}
+% \end{figure*}
 
 \section{Paper organization}
 The main part of a scientific paper is organized in a somewhat similar way
@@ -138,7 +186,17 @@ each time:
 \item You sketch, what could be achieved next, based on this work in the \emph{future work}
 \end{enumerate}
 
-\section{Basic Rules for Using Latex}
+\section{Basics}
+\subsection{Garbage Collection}
+\subsubsection{General principle}
+\subsubsection{Reference Counting}
+\subsection{Rust}
+\section{Main}
+\subsection{Heap allocation}
+\subsection{Reference Counting in Rust}
+\subsection{Raw pointers}
+\section{Conclusion}
+\section{Future work}
 
 \emph{Latex} is the system of choice for scientific publications. Papers
 are expected to be delivered in Latex form, scientific publishers

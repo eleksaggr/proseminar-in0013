@@ -3,8 +3,8 @@ seminarpaper.pdf seminarpaper.tex.deps :\
     /dev/null\
     /usr/share/texmf-dist/bibtex/bst/base/plain.bst\
     /usr/share/texmf-dist/fonts/map/fontname/texfonts.map\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm\
-    /usr/share/texmf-dist/fonts/tfm/public/cm/cmitt10.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm\
@@ -17,18 +17,16 @@ seminarpaper.pdf seminarpaper.tex.deps :\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmti10.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm\
+    /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb\
-    /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb\
-    /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb\
-    /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb\
     /usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii\
     /usr/share/texmf-dist/tex/generic/oberdiek/catchfile.sty\
     /usr/share/texmf-dist/tex/generic/oberdiek/etexcmds.sty\
@@ -71,11 +69,6 @@ seminarpaper.pdf seminarpaper.tex.deps :\
     /usr/share/texmf/tex/latex/minted/minted.sty\
     /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map\
     /var/lib/texmf/web2c/pdftex/pdflatex.fmt\
-    Figures/TUM-Logo-102.png\
-    Figures/test.pdf\
-    _minted-seminarpaper/078E0DCAFF10A2D3A1D06BD54852D521264EAF12564DCCE78332B10371411DAD.pygtex\
-    _minted-seminarpaper/default-pyg-prefix.pygstyle\
-    _minted-seminarpaper/default.pygstyle\
     seminarpaper.aex\
     seminarpaper.bib\
     seminarpaper.tex\
