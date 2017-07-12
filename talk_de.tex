@@ -100,7 +100,7 @@ void *malloc(size_t size);
 void free(void *ptr);
 	\end{minted}
 	\vspace{1cm}
-	\attention Es ist leicht zu vergessen, wann und ob Speicher bereits freigegeben wurde, was zu unnötigen Bugs führen kann!
+	\attention Es kann zu unnötigen Bugs führen, wenn vergessen wird, wann und wo schon Speicher freigegeben wurde.
 \end{frame}
 \begin{frame}[fragile]
 	\frametitle{Probleme - Memory Leaks}
@@ -124,28 +124,28 @@ int main(void) {
 }
 	\end{minted}
 \end{frame}
-% \begin{frame}[fragile]
-% 	\frametitle{Problems - Double Free}
-% 	\begin{minted}[frame=single, tabsize=4]{c}
-% int main(void) {
-% 	// Allocate some memory just like before.
-% 	char *c = malloc(10);
+\begin{frame}[fragile]
+	\frametitle{Problems - Double Free}
+	\begin{minted}[frame=single, tabsize=4]{c}
+int main(void) {
+	// Allocate some memory just like before.
+	char *c = malloc(10);
 
-% 	do_something(c);
+	do_something(c);
 
-% 	// Do something again, but the memory was
-% 	// already freed!
-% 	do_something(c);
-% }
+	// Do something again, but the memory was
+	// already freed!
+	do_something(c);
+}
 
-% void do_something(char *c) {
-% 	// Do something with the memory here.
+void do_something(char *c) {
+	// Do something with the memory here.
 
-% 	// Then free the memory.
-% 	free(c);
-% }
-% 	\end{minted}
-% \end{frame}
+	// Then free the memory.
+	free(c);
+}
+	\end{minted}
+\end{frame}
 \begin{frame}[fragile]
 	\frametitle{Probleme - Use after Free}
 	\begin{minted}[frame=single, tabsize=4]{c}
@@ -430,12 +430,12 @@ fn main() {
 	let car = Car {
 		owner: owner.clone(),
 		// Fields...
-	}
+	};
 
 	let car2 = Car {
 		owner: owner.clone(),
 		// Fields...
-	}
+	};
 	// ...
 }
 	\end{minted}
@@ -449,7 +449,7 @@ fn main() {
 	// Drop die lokale Variable 'owner'
 	drop(owner);
 
-	// Funktionert immer noch, da es immernoc
+	// Funktionert immer noch, da es immernoch
 	// Referenzen auf owner gibt!
 	println!("{}", car.owner.name);
 }
@@ -495,5 +495,14 @@ fn main() {
 	}
 }
 	\end{minted}
+\end{frame}
+\begin{frame}
+	\frametitle{Quellen}
+	\begin{enumerate}
+		\item https://doc.rust-lang.org/book/first-edition/unsafe.html
+		\item https://doc.rust-lang.org/book/first-edition/choosing-your-guarantees.html
+		\item ftp://ftp.cs.utexas.edu/pub/garbage/gcsurvey.ps
+		\item https://doc.rust-lang.org/std/
+	\end{enumerate}
 \end{frame}
 \end{document}
