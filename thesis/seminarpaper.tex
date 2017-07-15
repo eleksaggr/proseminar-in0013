@@ -191,27 +191,54 @@ each time:
 \subsection{Garbage Collection}
 \subsubsection{General principle}
 \subsubsection{Reference Counting}
-\textit{Reference counting} is a simple garbage collection algorithm, that uses reference counts to deallocate objects that are no longer referenced, and thus free the underlying memory. Here reference count refers to an internal counter, that tracks the amount of active references to a specific object. Everytime an active reference is destroyed the internal reference counter for that object is decremented. Correspondingly when a new reference to an object is created, the reference counter is incremented, to reflect the number of active references. When an objects reference count falls to zero, the object becomes inaccessible. The memory used by such an inaccessible object can be then be freed safely.
+\textit{Reference counting} is a simple garbage collection algorithm, that uses reference counts to deallocate objects that are no longer referenced, and thus free the underlying memory.
+Here reference count refers to an internal counter, that tracks the amount of active references to a specific object.
+Everytime an active reference is destroyed the internal reference counter for that object is decremented.
+Correspondingly when a new reference to an object is created, the reference counter is incremented, to reflect the number of active references.
+When an objects reference count falls to zero, the object becomes inaccessible.
+The memory used by such an inaccessible object can be then be freed safely.
 
-Reference counting displays characteristics of a simple garbage collection technique, however there are a few pitfalls that are not visible at first glance. Firstly when handling a large amount of objects a deletion may cause a large amount of objects to be freed in a chain reaction. This chain reaction can then use up valuable processing time, resulting in a largely unresponsive application for a user. A more severe problem is posed by \textit{reference cycles}, where multiple references reference each other, leading to a non-tree-like structure. These cycles can not be reclaimed, since each object depdends on another being freed first. These shortcomings render reference counting unsatisfactory in most contexts, but the following:
+Reference counting seems superior to any tracing algorithm, because of its simplicity, but there are a few caveats, that are not visibile at first glance.
+Firstly when handling a large amount of objects a deletion may cause a large amount of objects to be freed in a chain reaction.
+This chain reaction can then use up valuable processing time, resulting in a largely unresponsive application for a user.
+This pitfall can be circumvented with the following approach: Whenever an object should be ordinarly deleted, it is instead added to a list of objects that are to be freed.
+The list can then be processed at another point in time, effectively making the whole technique incremental.
+
+A more severe problem is posed by \textit{reference cycles}, where multiple references reference each other, leading to a non-tree-like structure.
+These cycles can not be reclaimed, since each object depdends on another being freed first.
+These shortcomings render reference counting unsatisfactory in most contexts, but the following situations:
 \begin{itemize}
-        \item Creation of loops is impossible
-        \item Modifications of reference counts are infrequent
-        \item Situations with strong memory constraints
+        \item Reference loops are impossible.
+        \item Modifications of references are infrequent.
+        \item Memory constraints are very tight.
 \end{itemize}
 \subsection{Rust}
-\section{Main}
+\section{Using memory in Rust}
 \subsection{Allocating data on the heap}
-It is common to store long-lived data on the heap section of the memory, as the lifetime of the data is then not decided by the lifetime of its local function. Rust allows allocating data on the heap by using the \mintinline{rust}{Box<T>} type\cite{RustDoc-Box}. An example of this can be seen in figure \ref{box-intro}, where the \mintinline{rust}{Box::new()} method is called to construct a \mintinline{rust}{Box} object containing an integer, effectively placing it on the heap. A conceptual implementation of such a \mintinline{rust}{Box} is given in figure \ref{box-implementation}. 
+\label{box}
+It is common practice to store long-lived data on the heap section of the memory, as the lifetime of the data is then decoupled of the lifetime of its local function.
+Rust allows allocating data on the heap by using the \mintinline{rust}{Box<T>} struct.
+A \mintinline{rust}{Box} may be created by calling the \mintinline{rust}{Box::new()} method, as can be seen in figure \ref{box-example}.
+It may seem like there is some kind of magic underneath the \mintinline{rust}{Box} type, but that would be contrary to Rusts goals.
+In fact a \mintinline{rust}{Box} is only a wrapper around a raw pointer (see \ref{raw-pointer}), that points to the heap, and the size of the object that is stored.
+A simple implementation of this \mintinline{rust}{Box} type is shown in figure \ref{box-definition}.
+When not fully accustomed to the Rust type system one may be puzzled by the \mintinline{rust}{where}-clause in the struct definition.
+This clause simply says the type that is stored in the \mintinline{rust}{Box} must have a fixed size and may not be a Dynamically Sized Type, like for example a Trait.
+
+Now there is still the question of how the memory used by a \mintinline{rust}{Box} is freed.
+The \mintinline{rust}{Box} struct implements the \mintinline{rust}{Drop} trait.
+The documentation for this trait describes it as follows: ``The \mintinline{rust}{Drop} trait is used to run some code when a value goes out of scope. This is sometimes called a destructor''\cite{RustDoc-Drop}.
+The \mintinline{rust}{Box} type uses this trait to free the memory reserved on the heap, when it goes out of scope.
 \begin{figure}
 \begin{rustcode}
 fn main() {
-    let b = Box::new(42);
+    let i: u8 = 42;
+    let b = Box::new(i);
 }
 \end{rustcode}
 \vspace{-2em}
-\caption{A program that stores the integer 42 on the heap.}
-\label{box-intro}
+\caption{A program that stores an \mintinline{rust}{u8} on the heap.}
+\label{box-example}
 \end{figure}
 \begin{figure}
 \begin{rustcode}
@@ -219,32 +246,64 @@ pub struct Box<T> where T: ?Sized {
     pointer: *mut T,
     size: usize,
 }
-
-impl<T> Box<T> where T: ?Sized {
-    pub fn new(data: T) -> Self {
-        // Allocate memory on the
-        // heap for the pointer.
-        Box {
-            pointer: ...,
-            size: std::mem::
-                   size_of::<T>(),
-        }
-    }
-}
-
-impl<T> Drop for Box<T> {
-    fn drop(&mut self) {
-        // Free the memory 
-        // allocated on the heap.
-    }
-}
 \end{rustcode}
 \vspace{-2em}
-\caption{An exemplary implementation of the \mintinline{rust}{Box} type.}
-\label{box-implementation}
+\caption{A simplified example definition of the \mintinline{rust}{Box} type.}
+\label{box-definition}
 \end{figure}
 \subsection{Reference Counting in Rust}
+\subsection{Interior Mutability with Cell types}
+\subsection{Unsafe Code}
+\label{unsafe}
+In some scenarios a programmer may write a 'safe' program, that the Rust compiler deems unsafe.
+The chapter 'unsafe' of the first edition of 'The Rust Book' \cite{RustBook-Unsafe} mentions that safety checks are conservative by nature: there are programs that are actually safe, but the compiler is not able to verify this is true.
+Usage of the \mintinline{rust}{unsafe} keyword allows to notify the compiler to be less strict in the block that was marked.
+Concretely such a designated block allows:
+\begin{enumerate}
+        \item Accessing and updating mutable static variables.
+        \item Dereferencing raw pointers.
+        \item Calling functions marked as unsafe.
+\end{enumerate}
+A mutable static variable is comparable to a global variable in most other programming languages.
+Accessing and updating these is deemed an unsafe action, since Rust was conceived with concurreny in mind.
+One thread may write to the variable, while another reads, leading to a data race.
+
+Dereferencing a raw pointer (see \ref{raw-pointer}) is unsafe, because Rust allows arbitrary pointer arithmetic, which means a pointer may point to memory not even assigned to the program, to memory an unexpected object occupies, or to NULL. This is one of the primary causes of many bugs in the C language, and one of the aspects Rust tries to circumvent by its strict ownership and lifetime rules.
+
+Calling functions marked unsafe must be unsafe, since these functions usually make some assumption about the data they work with. If these assumptions are broken one may end up with unexpected behaviour.
+
+The chapter 'unsafe' of first edition of the 'The Rust Book'\cite{RustBook-Unsafe} mentions the following as behaviours that may be undesirable, but not explicitely unsafe:
+\begin{itemize}
+        \item Deadlocks
+        \item Leaks of memory or other resources
+        \item Exiting without calling destructors
+        \item Integer overflow
+\end{itemize}
+Further it mentions that there are undefined behaviours, that must be avoided when writing unsafe code:
+\begin{itemize}
+        \item Data races
+        \item Dereferencing a NULL or dangling raw pointer
+        \item Reads of uninitialized memory
+        \item Breaking the pointer aliasing rules with raw pointers
+        \item \mintinline{rust}{&T} and \mintinline{rust}{&mut T} follow LLVM's scoped noalias model, expect if the \mintinline{rust}{&T} contains an \mintinline{rust}{UnsafeCell<T>}. Unsafe code must not violate these aliasing guarantees.
+        \item Mutating an immutable value/reference without \mintinline{rust}{UnsafeCell<T>}
+        \item Invoking undefined behaviour via compiler intrinsics:
+            \begin{itemize}
+                        \item Indexing outside of the bounds of an object with \mintinline{rust}{std::ptr::offset} (offset intrinsic), with the exception of one byte past the end which is permitted.
+                        \item Using \mintinline{rust}{std::ptr::copy_nonoverlapping_memory} (memcpy32/mempy64, intrinsics) on overlapping buffers.
+            \end{itemize}
+        \item Invalid values in primitive types, even in private fields/locals:
+            \begin{itemize}
+                        \item NULL/dangling references or boxes
+                        \item A value other than \mintinline{rust}{false} (0) or \mintinline{rust}{true} (1) in a \mintinline{rust}{bool}
+                        \item A discriminant in an \mintinline{rust}{enum} not included in its type definition
+                        \item A value in a \mintinline{rust}{char} which is a surrogate or above \mintinline{rust}{char::MAX}
+                        \item Non-UTF-8 byte sequence in a \mintinline{rust}{str}
+            \end{itemize}
+        \item Unwinding into Rust from foreign code or unwinding from Rust into foreign code.
+\end{itemize}
 \subsection{Raw pointers}
+\label{raw-pointer}
 \section{Conclusion}
 \section{Future work}
 
