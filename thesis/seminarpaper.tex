@@ -8,12 +8,13 @@
 
 \usepackage[pdftex]{graphicx}
 \usepackage{xcolor}
+\usepackage{url}
 \setlength{\parindent}{0cm}
 \setlength{\columnsep}{25pt}
 \usepackage{minted}
 \newminted{cpp}{mathescape,linenos,frame=single,numbersep=0.5mm}
+\newminted{rust}{mathescape,linenos,frame=single,numbersep=0.5mm}
 \definecolor{almostnogray}{rgb}{0.92,0.92,0.92}
-
 
 \sloppy
 
@@ -33,10 +34,10 @@
 \maketitle
 
 \begin{abstract}
-This paper aims to give a broad overview of existing memory management techniques
-and a quick introduction to the technique employed by the Rust programming language.
-Further it will demonstrate the different possibilities when working with memory in
-the Rust language.
+% This paper aims to give a broad overview of existing memory management techniques
+% and a quick introduction to the technique employed by the Rust programming language.
+% Further it will demonstrate the different possibilities when working with memory in
+% the Rust language.
 \end{abstract}
 
 % \section defines numbered parts of the paper with titles
@@ -46,24 +47,24 @@ the Rust language.
 % Use labels to be able to refer to this position from somewhere else
 \label{introduction}
 
-When talking about memory management one must firstly think about
-where in memory a given variable will be stored. There are different
-possibilities, that can be generally described by the following categories:
-\begin{itemize}
-        \item Static memory
-        \item Stack
-        \item Heap
-\end{itemize}
-\textit{Statically allocated} variables are simply hard-coded into the binary file of the program.
-The exact section they are located in is dependent upon the file format chosen.
+% When talking about memory management one must firstly think about
+% where in memory a given variable will be stored. There are different
+% possibilities, that can be generally described by the following categories:
+% \begin{itemize}
+%         \item Static memory
+%         \item Stack
+%         \item Heap
+% \end{itemize}
+% \textit{Statically allocated} variables are simply hard-coded into the binary file of the program.
+% The exact section they are located in is dependent upon the file format chosen.
 
 
-Variables that are local to a called function are usually stored on the \textit{stack}.
-The stack is a region in memory that emulates functionality of the stack data structure.
-It is simply a contiguous region of memory and a pointer to show where the last variable
-was placed. Since operating on the stack is such a common occurance, most CPUs have commands
-dedicated to pushing data to the stack and poping data from the stack, all while keeping the
-stack pointer at the correct location. This makes managing the stack trivial and fast.
+% Variables that are local to a called function are usually stored on the \textit{stack}.
+% The stack is a region in memory that emulates functionality of the stack data structure.
+% It is simply a contiguous region of memory and a pointer to show where the last variable
+% was placed. Since operating on the stack is such a common occurance, most CPUs have commands
+% dedicated to pushing data to the stack and poping data from the stack, all while keeping the
+% stack pointer at the correct location. This makes managing the stack trivial and fast.
 % Variables that are stored in static memory are called \textit{statically allocated}.
 % The values of these variables are hard-coded into a section of the executable file, that
 % is generated from the program. The exact section depends upon the selected executable
@@ -190,207 +191,256 @@ each time:
 \subsection{Garbage Collection}
 \subsubsection{General principle}
 \subsubsection{Reference Counting}
+\textit{Reference counting} is a simple garbage collection algorithm, that uses reference counts to deallocate objects that are no longer referenced, and thus free the underlying memory. Here reference count refers to an internal counter, that tracks the amount of active references to a specific object. Everytime an active reference is destroyed the internal reference counter for that object is decremented. Correspondingly when a new reference to an object is created, the reference counter is incremented, to reflect the number of active references. When an objects reference count falls to zero, the object becomes inaccessible. The memory used by such an inaccessible object can be then be freed safely.
+
+Reference counting displays characteristics of a simple garbage collection technique, however there are a few pitfalls that are not visible at first glance. Firstly when handling a large amount of objects a deletion may cause a large amount of objects to be freed in a chain reaction. This chain reaction can then use up valuable processing time, resulting in a largely unresponsive application for a user. A more severe problem is posed by \textit{reference cycles}, where multiple references reference each other, leading to a non-tree-like structure. These cycles can not be reclaimed, since each object depdends on another being freed first. These shortcomings render reference counting unsatisfactory in most contexts, but the following:
+\begin{itemize}
+        \item Creation of loops is impossible
+        \item Modifications of reference counts are infrequent
+        \item Situations with strong memory constraints
+\end{itemize}
 \subsection{Rust}
 \section{Main}
-\subsection{Heap allocation}
+\subsection{Allocating data on the heap}
+It is common to store long-lived data on the heap section of the memory, as the lifetime of the data is then not decided by the lifetime of its local function. Rust allows allocating data on the heap by using the \mintinline{rust}{Box<T>} type\cite{RustDoc-Box}. An example of this can be seen in figure \ref{box-intro}, where the \mintinline{rust}{Box::new()} method is called to construct a \mintinline{rust}{Box} object containing an integer, effectively placing it on the heap. A conceptual implementation of such a \mintinline{rust}{Box} is given in figure \ref{box-implementation}. 
+\begin{figure}
+\begin{rustcode}
+fn main() {
+    let b = Box::new(42);
+}
+\end{rustcode}
+\vspace{-2em}
+\caption{A program that stores the integer 42 on the heap.}
+\label{box-intro}
+\end{figure}
+\begin{figure}
+\begin{rustcode}
+pub struct Box<T> where T: ?Sized {
+    pointer: *mut T,
+    size: usize,
+}
+
+impl<T> Box<T> where T: ?Sized {
+    pub fn new(data: T) -> Self {
+        // Allocate memory on the
+        // heap for the pointer.
+        Box {
+            pointer: ...,
+            size: std::mem::
+                   size_of::<T>(),
+        }
+    }
+}
+
+impl<T> Drop for Box<T> {
+    fn drop(&mut self) {
+        // Free the memory 
+        // allocated on the heap.
+    }
+}
+\end{rustcode}
+\vspace{-2em}
+\caption{An exemplary implementation of the \mintinline{rust}{Box} type.}
+\label{box-implementation}
+\end{figure}
 \subsection{Reference Counting in Rust}
 \subsection{Raw pointers}
 \section{Conclusion}
 \section{Future work}
 
-\emph{Latex} is the system of choice for scientific publications. Papers
-are expected to be delivered in Latex form, scientific publishers
-even require you to make use of their templates \cite{springer,acm}.
-We thus strongly encourage students to get to grips with Latex. As
-programmers, You will most likely enjoy the workflow of a text
-processor like Latex anyway.
+% \emph{Latex} is the system of choice for scientific publications. Papers
+% are expected to be delivered in Latex form, scientific publishers
+% even require you to make use of their templates \cite{springer,acm}.
+% We thus strongly encourage students to get to grips with Latex. As
+% programmers, You will most likely enjoy the workflow of a text
+% processor like Latex anyway.
 
-The following is meant as a demonstration of the capabilities and
-the source code, that is necessary to produce this output. You may
-use the source code of this seminar paper as a template, if you wish.
+% The following is meant as a demonstration of the capabilities and
+% the source code, that is necessary to produce this output. You may
+% use the source code of this seminar paper as a template, if you wish.
 
-%start demonstration
+% %start demonstration
 
-First, we want to refer to the figures and the introduction.
-See Fig.\ref{TUM} for the first floating figure with column width,
-and Fig.\ref{Fig2} for the one using the full page width.
-And here, we want to put a reference to the introduction which is
-Section \ref{introduction}.
+% First, we want to refer to the figures and the introduction.
+% See Fig.\ref{TUM} for the first floating figure with column width,
+% and Fig.\ref{Fig2} for the one using the full page width.
+% And here, we want to put a reference to the introduction which is
+% Section \ref{introduction}.
 
-In translating this template from German to English, I decided to
-stop here. There is not really much to get from the German text
-following. Anything Latex-related can also be looked up on the
-net. There is a {\it huge} number of tutorials, and so on.
+% In translating this template from German to English, I decided to
+% stop here. There is not really much to get from the German text
+% following. Anything Latex-related can also be looked up on the
+% net. There is a {\it huge} number of tutorials, and so on.
 
-Please do not use to much different font sizes and styles. It should
-be completely enough to go to {\em italic mode} for emphasizing something,
-such as newly introduced terms.
-You can refer to other parts of your paper (e.g. see Sec.~\ref{introduction}).
-Quoting in Latex is done ``this way''.
-Further, you may have problems with punctation characters.
-Most of them just need to be prefixed by a backslash, for others you may
-temporarily switch to math mode:
-\$ \& \% \# \{ \} [ ] \_ @ \S $<$ $>$ $\backslash$ @ \textasciitilde /
+% Please do not use to much different font sizes and styles. It should
+% be completely enough to go to {\em italic mode} for emphasizing something,
+% such as newly introduced terms.
+% You can refer to other parts of your paper (e.g. see Sec.~\ref{introduction}).
+% Quoting in Latex is done ``this way''.
+% Further, you may have problems with punctation characters.
+% Most of them just need to be prefixed by a backslash, for others you may
+% temporarily switch to math mode:
+% \$ \& \% \# \{ \} [ ] \_ @ \S $<$ $>$ $\backslash$ @ \textasciitilde /
 
-Talking about math mode: you can do some very nice things this way:
-\begin{equation}
-a^2 + b^2 = c^2
-\label{Pythagoras}
-\end{equation}
-Again, refering to this equation is easy (see Eq.~\ref{Pythagoras}).
-If you do not need numbering for equations, use the {\em displaymath}
-environment:
-\begin{displaymath}
-x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a}\\
-\end{displaymath}
-Short equations simply can be used within the regular text flow, such
-as with $x \to \infty$. Obviously, math is fun with Latex.
-
-
-\subsection*{Enumerations}
-
-Enumerations using bullet points:
-
-\begin{itemize}
-	\item this is the first item of this list of interesting facts,
-	\item second item,
-	\item and the last one.
-\end{itemize}
-
-They also can be numbered:
-
-\begin{enumerate}
-	\item item one,
-	\item item two,
-	\item item three.
-\end{enumerate}
-
-As shown, numbers always should be written out in the text, unless the
-belong to a title or a formula.
-
-\section{Literature}
-
-At the end of your paper, you should have a nice list of used
-literature. For scientific papers, this actually is needed. You always
-use other works as base for your own. Usually, you are not the only
-one thinking about a given difficult problem, so there is always
-related work which {\em must} be cited if known to the author.
-
-Further, if you want to copy relevant sentences from an
-original paper, you {\em have} to cite them correctly, for example
-in this way:
-\begin{quote}
-	``I think there is a world market for maybe five computers.''
-	(T.J. Watson, IBM, 1943)
-\end{quote}
-However, in computer science, direct citations are uncommon if not
-even considered bad style -- with the notable exception of lemmas
-and theorems.
-
-Much more common is the indirect citation. Here, the cited work
-(especially all the regular text) must be
-written/phrased by you. If you write about some results or fact
-stated in another paper, you should refer to it.
-The `Analytical Engine'' --- a mechanical calculation machine ---
-created by Charles Babbage in the year 1838 was based on the decimal
-system
-% use \cite to refer to papers from seminarpaper.bib
-% this file is processed by bibtex, and it automatically adds numbering
-\cite{Brom98}.
-
-You can find new sources for scientific topics quite comforatbly via
-DBLP Computer Science Bibliography \cite{DBLP}. This site not only
-acts as a registry for almost all publications in computer scientific
-journals and conferences, but also provides You with correctly
-formated \emph{bibtex}-entries, ready to be integrated into your
-seminar papers \emph{bib}-file.
-
-\section{Figures and Tables}
-
-No need to understand the following text.
-
-Figures can span either one column (see Fig.~\ref{TUM}) or the full
-page width (see Fig.~\ref{Fig2}).
-Latex automatically tries to find the best place for these floating
-figures. To influence that, you may move the figure a bit to the front
-of your text.
-As can be seen in Fig.~\ref{TUM}, using raster images usually results in
-quite bad quality. Better use vector formats: draw the figures with
-{\em inkscape} \cite{inkscape}, and save them as PDF or SVG. As example of
-this procedure, see Fig.~\ref{Fig2}).
-
-% Narrow tables (just one column) have no * at the end
-\begin{table*}
-% label is for this table
-\label{Tab1}
-\begin{center}
-% arguments:
-% c = center
-% l = left
-% r = right (z. B. for cash)
-% p = columns with fixed width, using block layout
-% | = vertical line
-\begin{tabular}{|l|p{2cm}|c|c|c|c|c|r|}
-% horizontal line
-\hline
-% & means: next column
-% \\ means: next row
-	& Column 1 & Column 2 & Column 3 & Column 4& Column 5& Column 6& Amount\\
-\hline
-Row 1 & This column has a maximal width of 2 cm.& X & X& X& X& X& 126,00\\
-\hline
-Row 2 & & \multicolumn{3}{p{5cm}|}{This entry occupies three columns.}& X &X & 8,00\\
-\hline
-\multicolumn{7}{|l}{Sum} &134,00\\
-\hline
-\end{tabular}
-\caption{For this layout, we want table captions to be {\em below} the actual table.}
-\end{center}
-\end{table*}
-
-Similar to figures, tables can be referred to in the text (see Tab.~\ref{Tab1}).
-However, sometimes it is useful to embed tables directly in the regular
-text flow:
-
-\begin{center}
-\begin{tabular}{|c|c|c|}
-\hline
-	& Column 1 & Column 2 \\
-\hline
-Row 1 & & \\
-Row 1 & & \\
-\hline
-\end{tabular}
-\end{center}
+% Talking about math mode: you can do some very nice things this way:
+% \begin{equation}
+% a^2 + b^2 = c^2
+% \label{Pythagoras}
+% \end{equation}
+% Again, refering to this equation is easy (see Eq.~\ref{Pythagoras}).
+% If you do not need numbering for equations, use the {\em displaymath}
+% environment:
+% \begin{displaymath}
+% x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a}\\
+% \end{displaymath}
+% Short equations simply can be used within the regular text flow, such
+% as with $x \to \infty$. Obviously, math is fun with Latex.
 
 
-\section{Summary}
-\label{summary}
+% \subsection*{Enumerations}
 
-The summary shortly repeats the core ideas and results from the
-previous text. If the reader has problems understanding the summary
-he knows that he should go back to the relevant sections.
-Thus, the last section should consist of:
+% Enumerations using bullet points:
 
-\begin{itemize}
-	\item a summary,
-	\item an evaluation of what was done, importance of this work,
-	\item what is left, what still needs to be done,
-        \item short outlook into the future.
-\end{itemize}
+% \begin{itemize}
+% 	\item this is the first item of this list of interesting facts,
+% 	\item second item,
+% 	\item and the last one.
+% \end{itemize}
 
-Last but not least, we can explain anything missing yet in the evaluation
-done in this paper. This allows to refer to what readers can expect from
-authors in the future.
+% They also can be numbered:
 
-% Put citations from bibtex into References section which were not
-% explicity cited.
-% \nocite{robotron,
-% stonx,vice,650sim,herculessim,zib,4004,thermal1,thermal2,rojas,neumann,
-% neumann1void,neumann2void,neumann3,neumann4,Siewiorek,AmBlBr,Blaauw:1997:CAC,ChPB97,Brom98,Clym93,Buhu99,
-% Edwa01,Nill99,ABC+90,Rama91,Heid97,Kist95,Klot03,LMcCL92,LFS+92,LMDD92,Vlec03,Cray77,top500,650,Amda67,
-% Arla88,ODLD86,Hick04,Walk04}
-% 
+% \begin{enumerate}
+% 	\item item one,
+% 	\item item two,
+% 	\item item three.
+% \end{enumerate}
+
+% As shown, numbers always should be written out in the text, unless the
+% belong to a title or a formula.
+
+% \section{Literature}
+
+% At the end of your paper, you should have a nice list of used
+% literature. For scientific papers, this actually is needed. You always
+% use other works as base for your own. Usually, you are not the only
+% one thinking about a given difficult problem, so there is always
+% related work which {\em must} be cited if known to the author.
+
+% Further, if you want to copy relevant sentences from an
+% original paper, you {\em have} to cite them correctly, for example
+% in this way:
+% \begin{quote}
+% 	``I think there is a world market for maybe five computers.''
+% 	(T.J. Watson, IBM, 1943)
+% \end{quote}
+% However, in computer science, direct citations are uncommon if not
+% even considered bad style -- with the notable exception of lemmas
+% and theorems.
+
+% Much more common is the indirect citation. Here, the cited work
+% (especially all the regular text) must be
+% written/phrased by you. If you write about some results or fact
+% stated in another paper, you should refer to it.
+% The `Analytical Engine'' --- a mechanical calculation machine ---
+% created by Charles Babbage in the year 1838 was based on the decimal
+% system
+% % use \cite to refer to papers from seminarpaper.bib
+% % this file is processed by bibtex, and it automatically adds numbering
+% \cite{Brom98}.
+
+% You can find new sources for scientific topics quite comforatbly via
+% DBLP Computer Science Bibliography \cite{DBLP}. This site not only
+% acts as a registry for almost all publications in computer scientific
+% journals and conferences, but also provides You with correctly
+% formated \emph{bibtex}-entries, ready to be integrated into your
+% seminar papers \emph{bib}-file.
+
+% \section{Figures and Tables}
+
+% No need to understand the following text.
+
+% Figures can span either one column (see Fig.~\ref{TUM}) or the full
+% page width (see Fig.~\ref{Fig2}).
+% Latex automatically tries to find the best place for these floating
+% figures. To influence that, you may move the figure a bit to the front
+% of your text.
+% As can be seen in Fig.~\ref{TUM}, using raster images usually results in
+% quite bad quality. Better use vector formats: draw the figures with
+% {\em inkscape} \cite{inkscape}, and save them as PDF or SVG. As example of
+% this procedure, see Fig.~\ref{Fig2}).
+
+% % Narrow tables (just one column) have no * at the end
+% \begin{table*}
+% % label is for this table
+% \label{Tab1}
+% \begin{center}
+% % arguments:
+% % c = center
+% % l = left
+% % r = right (z. B. for cash)
+% % p = columns with fixed width, using block layout
+% % | = vertical line
+% \begin{tabular}{|l|p{2cm}|c|c|c|c|c|r|}
+% % horizontal line
+% \hline
+% % & means: next column
+% % \\ means: next row
+% 	& Column 1 & Column 2 & Column 3 & Column 4& Column 5& Column 6& Amount\\
+% \hline
+% Row 1 & This column has a maximal width of 2 cm.& X & X& X& X& X& 126,00\\
+% \hline
+% Row 2 & & \multicolumn{3}{p{5cm}|}{This entry occupies three columns.}& X &X & 8,00\\
+% \hline
+% \multicolumn{7}{|l}{Sum} &134,00\\
+% \hline
+% \end{tabular}
+% \caption{For this layout, we want table captions to be {\em below} the actual table.}
+% \end{center}
+% \end{table*}
+
+% Similar to figures, tables can be referred to in the text (see Tab.~\ref{Tab1}).
+% However, sometimes it is useful to embed tables directly in the regular
+% text flow:
+
+% \begin{center}
+% \begin{tabular}{|c|c|c|}
+% \hline
+% 	& Column 1 & Column 2 \\
+% \hline
+% Row 1 & & \\
+% Row 1 & & \\
+% \hline
+% \end{tabular}
+% \end{center}
+
+
+% \section{Summary}
+% \label{summary}
+
+% The summary shortly repeats the core ideas and results from the
+% previous text. If the reader has problems understanding the summary
+% he knows that he should go back to the relevant sections.
+% Thus, the last section should consist of:
+
+% \begin{itemize}
+% 	\item a summary,
+% 	\item an evaluation of what was done, importance of this work,
+% 	\item what is left, what still needs to be done,
+%         \item short outlook into the future.
+% \end{itemize}
+
+% Last but not least, we can explain anything missing yet in the evaluation
+% done in this paper. This allows to refer to what readers can expect from
+% authors in the future.
+
+% % Put citations from bibtex into References section which were not
+% % explicity cited.
+% % \nocite{robotron,
+% % stonx,vice,650sim,herculessim,zib,4004,thermal1,thermal2,rojas,neumann,
+% % neumann1void,neumann2void,neumann3,neumann4,Siewiorek,AmBlBr,Blaauw:1997:CAC,ChPB97,Brom98,Clym93,Buhu99,
+% % Edwa01,Nill99,ABC+90,Rama91,Heid97,Kist95,Klot03,LMcCL92,LFS+92,LMDD92,Vlec03,Cray77,top500,650,Amda67,
+% % Arla88,ODLD86,Hick04,Walk04}
+% % 
 
 \bibliographystyle{plain}
 % Literature sources are to be found in seminarpaper.bib
