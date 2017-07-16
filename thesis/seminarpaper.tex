@@ -46,133 +46,6 @@
 
 % Use labels to be able to refer to this position from somewhere else
 \label{introduction}
-
-% When talking about memory management one must firstly think about
-% where in memory a given variable will be stored. There are different
-% possibilities, that can be generally described by the following categories:
-% \begin{itemize}
-%         \item Static memory
-%         \item Stack
-%         \item Heap
-% \end{itemize}
-% \textit{Statically allocated} variables are simply hard-coded into the binary file of the program.
-% The exact section they are located in is dependent upon the file format chosen.
-
-
-% Variables that are local to a called function are usually stored on the \textit{stack}.
-% The stack is a region in memory that emulates functionality of the stack data structure.
-% It is simply a contiguous region of memory and a pointer to show where the last variable
-% was placed. Since operating on the stack is such a common occurance, most CPUs have commands
-% dedicated to pushing data to the stack and poping data from the stack, all while keeping the
-% stack pointer at the correct location. This makes managing the stack trivial and fast.
-% Variables that are stored in static memory are called \textit{statically allocated}.
-% The values of these variables are hard-coded into a section of the executable file, that
-% is generated from the program. The exact section depends upon the selected executable
-% file format. The simple example in figure \ref{static_example} shows a C program that 
-% allocates a string in static memory and then prints that same string to the standard output.
-% To assure the string was actually hard-coded into the binary file, we'll take a look at the \mintinline{text}{.rodata}
-% section of the executable. To do this one may call \mintinline{text}{objdump -s -j .rodata static} in a shell of choice.
-% The important part of the output is highlighted in figure \ref{static_disassemble}. One can easily recognize the encoded string "Hello, World!" in the output, which proves it is hard-coded.
-
-
-
-% Variables that are local to a called function are usually stored on the stack. 
-
-% \begin{figure}
-% \inputminted[linenos,frame=single]{c}{examples/static.c}
-% \vspace{-2em}
-% \caption{A simple program that prints the statically allocated string "Hello, World!" to the standard output.}
-% \label{static_example}
-% \end{figure}
-
-% \begin{figure}
-% \begin{minted}[linenos,frame=single,breaklines]{text}
-%  Contents of section .rodata:
-%  400570 01000200 48656c6c 6f2c2057 6f726c64  ....Hello, World
-%  400580 2100                                 !.
-% \end{minted}
-% \vspace{-2em}
-%     \caption{The \mintinline{text}{.rodata} section of the program in figure \ref{static_example}.}
-% \label{static_disassemble}
-% \end{figure}
-
-% The introduction of a scientific work usually consists of the following
-% parts:
-% \begin{itemize}
-% 	\item motivation,
-% 	\item issues or drawbacks with existing solutions of a problem at hand,
-% 	\item overview of new contribution and rest of the paper.
-% \end{itemize}
-% In the motivation you should explain why a given topic is interesting
-% at all, and also, why solutions are important from a scientific point
-% of view. There already may be a lot of existing solutions. Thus, it
-% is important for the reader to understand the issues with these solutions,
-% and why they are not enough for e.g. a specific scenario. Often, concrete
-% examples are quite useful in providing a motivation, as well as providing
-% a running example, that can be picked up later on in the main part.
-% \begin{figure}
-% \begin{cppcode}
-% #include <iostream>
-% void main(void){
-%   std::cout << "simple code example";
-% }
-% \end{cppcode}
-
-% \vspace{-2em}
-% \caption{A very simple C++ code fragment}
-% \label{introexample}
-% \end{figure}
-% After the motivational example, you should explain the basic idea of your new
-% contribution to solve the problem at hand, and give a short overview
-% (only a slight hint) of how this works.
-
-% \subsection*{Related Work}
-
-% Here, you elaborate on how this approach differs from other existing solutions -- if not in general, then illustrate the scenario, in which the approach is beneficial. This subsection also offers room for introducing related or alternative approaches to this approach, and establishes a kind of state of the art. This might even incorporate solution approaches in other fields, if the setting is comparable to this thesis. Translated to topics in programming languages, this would mean e.g. similar solutions in other programming languages. Ultimately, however, this should culminate in explicitely formulating the \emph{thesis statement} \cite{thesis-statement}:
-% \begin{itemize}
-% \item what is the unique core contribution of this specific approach
-% \item in not more than 3 itemss
-% \item this should be thought of the basic information, that the reader
-%   should take away from your paper
-% \end{itemize}
-% This concept of unique core contributions is in seminar papers, what in
-% research papers is usually the \emph{Research Question} \cite{constructing-research-questions}. As the seminar paper is usually meant to be a piece of
-% work, that teaches students to write academic papers, the usual guides
-% for general scientific writing like the work of Turabian \cite{manual-for-writers} or the more computer science centric approach of Zobel
-% \cite{writing-for-computer-science} can also be applied to seminar papers.
-
-
-% Finally, a short overview to the structure of the rest of the work
-% should be provided, which may indicate the most important points.
-% As any idea or solution proposed must be shown to be valid and useful, every scientific paper
-% must have some evaluation and/or discussion. It may to useful to select
-% important results, and mention them already as last part of the
-% introduction, as motivation for the reader to read on. In summary,
-% a good introduction creates interest for the topic and
-% proposed new contributions that the reader cannot wait to read on.
-
-% % free floating figure using width of one column.
-% \begin{figure}
-% \centerline{
-% \includegraphics[width=0.9\columnwidth,interpolate]{Figures/TUM-Logo-102.png}
-% }
-% \caption{The caption explaining what can be seen in the image/figure.
-% Readers often read captions first if they do not have much time. Thus,
-% it is important to find a good short explanation.}
-% % A label to allow refering to this figure in the text.
-% \label{TUM}
-% \end{figure}
-
-% % free floating figure using width of full page, to be put on [t]op.
-% \begin{figure*}[t]
-% \centerline{
-% \includegraphics[width=0.9\textwidth]{Figures/test.pdf}
-% }
-% \caption{A nice caption. The larger width allows for more text without
-% taking too much space.}
-% \label{Fig2}
-% \end{figure*}
-
 \section{Paper organization}
 The main part of a scientific paper is organized in a somewhat similar way
 each time:
@@ -253,55 +126,35 @@ pub struct Box<T> where T: ?Sized {
 \end{figure}
 \subsection{Reference Counting in Rust}
 \subsection{Interior Mutability with Cell types}
-\subsection{Unsafe Code}
+\subsection{Writing unsafe Code}
 \label{unsafe}
-In some scenarios a programmer may write a 'safe' program, that the Rust compiler deems unsafe.
-The chapter 'unsafe' of the first edition of 'The Rust Book' \cite{RustBook-Unsafe} mentions that safety checks are conservative by nature: there are programs that are actually safe, but the compiler is not able to verify this is true.
-Usage of the \mintinline{rust}{unsafe} keyword allows to notify the compiler to be less strict in the block that was marked.
-Concretely such a designated block allows:
+In some situations a programmer may need to write code, that the static guarantees of the compiler would reject.
+Such situations may for example occur whenever raw pointers (see \ref{raw-pointer}) are used to work around some restriction of Rusts borrowing mechanism.
+Another possibility is whenever Rust tries to interact with hardware directly, since hardware does not adhere to Rusts rules.
+The \mintinline{rust}{unsafe} keyword can be used to communicate to the compiler, that the designated block contains 'unsafe' code.
+'Unsafe' here means exactly the following behaviours:
 \begin{enumerate}
-        \item Accessing and updating mutable static variables.
-        \item Dereferencing raw pointers.
-        \item Calling functions marked as unsafe.
+        \item Dereferencing a raw pointer.
+        \item Calling an unsafe function or method.
+        \item Accessing or modifying a mutable static variable.
+        \item Implementing an unsafe trait.
 \end{enumerate}
-A mutable static variable is comparable to a global variable in most other programming languages.
-Accessing and updating these is deemed an unsafe action, since Rust was conceived with concurreny in mind.
-One thread may write to the variable, while another reads, leading to a data race.
-
-Dereferencing a raw pointer (see \ref{raw-pointer}) is unsafe, because Rust allows arbitrary pointer arithmetic, which means a pointer may point to memory not even assigned to the program, to memory an unexpected object occupies, or to NULL. This is one of the primary causes of many bugs in the C language, and one of the aspects Rust tries to circumvent by its strict ownership and lifetime rules.
-
-Calling functions marked unsafe must be unsafe, since these functions usually make some assumption about the data they work with. If these assumptions are broken one may end up with unexpected behaviour.
-
-The chapter 'unsafe' of first edition of the 'The Rust Book'\cite{RustBook-Unsafe} mentions the following as behaviours that may be undesirable, but not explicitely unsafe:
-\begin{itemize}
-        \item Deadlocks
-        \item Leaks of memory or other resources
-        \item Exiting without calling destructors
-        \item Integer overflow
-\end{itemize}
-Further it mentions that there are undefined behaviours, that must be avoided when writing unsafe code:
-\begin{itemize}
-        \item Data races
-        \item Dereferencing a NULL or dangling raw pointer
-        \item Reads of uninitialized memory
-        \item Breaking the pointer aliasing rules with raw pointers
-        \item \mintinline{rust}{&T} and \mintinline{rust}{&mut T} follow LLVM's scoped noalias model, expect if the \mintinline{rust}{&T} contains an \mintinline{rust}{UnsafeCell<T>}. Unsafe code must not violate these aliasing guarantees.
-        \item Mutating an immutable value/reference without \mintinline{rust}{UnsafeCell<T>}
-        \item Invoking undefined behaviour via compiler intrinsics:
-            \begin{itemize}
-                        \item Indexing outside of the bounds of an object with \mintinline{rust}{std::ptr::offset} (offset intrinsic), with the exception of one byte past the end which is permitted.
-                        \item Using \mintinline{rust}{std::ptr::copy_nonoverlapping_memory} (memcpy32/mempy64, intrinsics) on overlapping buffers.
-            \end{itemize}
-        \item Invalid values in primitive types, even in private fields/locals:
-            \begin{itemize}
-                        \item NULL/dangling references or boxes
-                        \item A value other than \mintinline{rust}{false} (0) or \mintinline{rust}{true} (1) in a \mintinline{rust}{bool}
-                        \item A discriminant in an \mintinline{rust}{enum} not included in its type definition
-                        \item A value in a \mintinline{rust}{char} which is a surrogate or above \mintinline{rust}{char::MAX}
-                        \item Non-UTF-8 byte sequence in a \mintinline{rust}{str}
-            \end{itemize}
-        \item Unwinding into Rust from foreign code or unwinding from Rust into foreign code.
-\end{itemize}
+\cite{RustBook-Unsafe}.
+\paragraph{Calling an unsafe function or method} is unsafe behaviour, because these unsafe functions generally assume that some invariant is true before they are called.
+A programmer may have unknowingly broken the invariant before calling the function, resulting in a memory violation or other unwanted behaviour.
+An example of this can be seen in figure \ref{unsafe-function}, in which a function called \mintinline{text}{add_three} takes a mutable raw pointer (see \ref{raw-pointer}), offsets it by one, derefences it, and adds three to it.
+Obviously this is not memory-safe when the pointer does not own the element after it in memory, and as such the function must be marked \mintinline{rust}{unsafe}.
+The \mintinline{rust}{unsafe} keyword in the function definition additonally acts like an \mintinline{rust}{unsafe} block around the whole function body, which is the reason the dereferencing of the pointer in figure \ref{unsafe-function} is not wrapped in an \mintinline{rust}{unsafe} block.
+\begin{figure}
+\begin{rustcode}
+unsafe fn add_three(ptr: *mut u8) {
+        *(ptr.offset(1)) += 3;
+}
+\end{rustcode}
+\vspace{-2em}
+\caption{An unsafe function, that adds three to a pointer offset by one.}
+\label{unsafe-function}
+\end{figure}
 \subsection{Raw pointers}
 \label{raw-pointer}
 \section{Conclusion}
