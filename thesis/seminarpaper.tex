@@ -46,24 +46,9 @@
 
 % Use labels to be able to refer to this position from somewhere else
 \label{introduction}
-\section{Paper organization}
-The main part of a scientific paper is organized in a somewhat similar way
-each time:
-\begin{enumerate}
-\item You announce, that you will tell about something in the \emph{abstract}
-\item You introduce to what you did in the \emph{introduction}
-\item You clarify the amount of your specific contribution in the \emph{related work}
-\item You make the paper well-founded, by introducing necessary standards in the \emph{basics part}
-\item You actually tell about what you did in the \emph{main part}
-\item \emph{Optional, if possible:} You evaluate in as neutral a way as possible what You have done in the \emph{evaluation}
-\item You summarize, and finally draw conclusions on what you have done in the \emph{conclusion}
-\item You sketch, what could be achieved next, based on this work in the \emph{future work}
-\end{enumerate}
-
-\section{Basics}
-\subsection{Garbage Collection}
-\subsubsection{General principle}
-\subsubsection{Reference Counting}
+\section{Garbage Collection}
+\subsection{General principle}
+\subsection{Reference Counting}
 \textit{Reference counting} is a simple garbage collection algorithm, that uses reference counts to deallocate objects that are no longer referenced, and thus free the underlying memory.
 Here reference count refers to an internal counter, that tracks the amount of active references to a specific object.
 Everytime an active reference is destroyed the internal reference counter for that object is decremented.
@@ -102,6 +87,8 @@ Now there is still the question of how the memory used by a \mintinline{rust}{Bo
 The \mintinline{rust}{Box} struct implements the \mintinline{rust}{Drop} trait.
 The documentation for this trait describes it as follows: ``The \mintinline{rust}{Drop} trait is used to run some code when a value goes out of scope. This is sometimes called a destructor''\cite{RustDoc-Drop}.
 The \mintinline{rust}{Box} type uses this trait to free the memory reserved on the heap, when it goes out of scope.
+
+
 \begin{figure}
 \begin{rustcode}
 fn main() {
@@ -124,8 +111,39 @@ pub struct Box<T> where T: ?Sized {
 \caption{A simplified example definition of the \mintinline{rust}{Box} type.}
 \label{box-definition}
 \end{figure}
+\subsection{The \mintinline{rust}{Deref} trait}
 \subsection{Reference Counting in Rust}
 \subsection{Interior Mutability with Cell types}
+``\textit{Interior Mutability} is a design pattern in Rust for allowing you to mutate data even though there are immutable references to that data, which would normally be disallowed by the borrowing rules. The interior mutability pattern involves using unsafe code inside a data structure to bend Rust's usual rules around mutation and borrowing.''\cite{RustBook-InteriorMutability}
+\subsection{Raw pointers}
+\label{raw-pointer}
+Rust has two kinds of references that allow pointing to an arbitrary place in memory.
+These references are called \textit{raw pointers}. 
+The two types are \mintinline{rust}{*const T} and \mintinline{rust}{*mut T}.
+How to create such raw pointers is shown in figure \ref{raw-pointer-new} and in figure \ref{raw-pointer-new2}.
+The difference between the \mintinline{rust}{const} and the \mintinline{rust}{mut} variants is simply whether the value in the underlying memory address can be mutated through the pointer, or not.
+In the example in figure \ref{raw-pointer-new} we created two pointers to the same address.
+One begin a \mintinline{rust}{const *u32} and the other a \mintinline{rust}{mut *u32}.
+If we were to create a \mintinline{rust}{&u32} and a \mintinline{rust}{&mut u32} we would get a compiler error, but when working with raw pointers the usual borrowing rules don't apply.
+\begin{figure}
+\begin{rustcode}
+let count: u32 = 65;
+let ptr = &count as *const u32;
+let mut_ptr = &mut count as *mut u32;
+\end{rustcode}
+\vspace{-2em}
+\caption{Creating two raw pointers from a reference to an \mintinline{rust}{u32}.}
+\label{raw-pointer-new}
+\end{figure}
+\begin{figure}
+\begin{rustcode}
+let address = 0x123456;
+let ptr = address as *mut u32;
+\end{rustcode}
+\vspace{-2em}
+\caption{Creating a raw pointer from an address.}
+\label{raw-pointer-new2}
+\end{figure}
 \subsection{Writing unsafe Code}
 \label{unsafe}
 In some situations a programmer may need to write code, that the static guarantees of the compiler would reject.
@@ -155,8 +173,29 @@ unsafe fn add_three(ptr: *mut u8) {
 \caption{An unsafe function, that adds three to a pointer offset by one.}
 \label{unsafe-function}
 \end{figure}
-\subsection{Raw pointers}
-\label{raw-pointer}
+\paragraph{Accessing or updating a static mutable variable} is defined to be unsafe behaviour.
+Static mutable variables are comparable to global state in other programming languages.
+Hoare describes Rust as having a ``safe concurrency model''\cite{HoareInterview}.
+This is especially visibile when looking at the concept of borrowing, where Rust enforces safe concurrency through the restrictions on \mintinline{rust}{&T} and \mintinline{rust}{&mut T} references.
+Additionally it is Rusts responsibility to ensure data races on global state can not happen.
+Infact the Rust compiler will not allow accessing or updating such global state, without declaring the operation
+as \mintinline{rust}{unsafe}, after which it is the programmers responsibility to ensure correct handling of data races.
+An example of updating a static mutable variable can be seen in figure \ref{unsafe-staticmut}.
+\begin{figure}
+\begin{rustcode}
+static mut COUNT: u8 = 0;
+
+fn main() {
+    unsafe {
+        COUNT = 1;
+    }
+}
+\end{rustcode}
+\vspace{-2em}
+\caption{Updating a static mutable variable in an \mintinline{rust}{unsafe} block.}
+\label{unsafe-staticmut}
+\end{figure}
+\paragraph{Implementing an unsafe trait}
 \section{Conclusion}
 \section{Future work}
 
