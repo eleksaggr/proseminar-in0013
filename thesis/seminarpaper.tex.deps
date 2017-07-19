@@ -5,6 +5,7 @@ seminarpaper.pdf seminarpaper.tex.deps :\
     /usr/share/texmf-dist/fonts/map/fontname/texfonts.map\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm\
+    /usr/share/texmf-dist/fonts/tfm/public/cm/cmitt10.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm\
@@ -17,9 +18,9 @@ seminarpaper.pdf seminarpaper.tex.deps :\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmti10.tfm\
     /usr/share/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm\
-    /usr/share/texmf-dist/fonts/tfm/public/cm/cmtt12.tfm\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb\
+    /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb\
@@ -27,7 +28,6 @@ seminarpaper.pdf seminarpaper.tex.deps :\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb\
     /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb\
-    /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb\
     /usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii\
     /usr/share/texmf-dist/tex/generic/oberdiek/catchfile.sty\
     /usr/share/texmf-dist/tex/generic/oberdiek/etexcmds.sty\
@@ -76,24 +76,38 @@ seminarpaper.pdf seminarpaper.tex.deps :\
     _minted-seminarpaper/15E13B5AA27BC123EBE41C72380224199B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/1EA806FA712A9A10AADE254430D949AA9B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/2054963CD4A50C10658907DEDC440C519B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/2205E48DE5F93C784733FFCCA841D2B59B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/3B7376B73F9ECE2F3ABD1D9198BE69819B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/453710781CA30003F58268738507CDCE01BF28581FCDE9C4055D403AD49B8074.pygtex\
     _minted-seminarpaper/4AB1A3A414BB3CA71AE8C7838DDE202CFD91D0601391F3FDB29A4F02E1852380.pygtex\
+    _minted-seminarpaper/4D1258AAF9722FAAE5D38807366949819B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/53EA866756311330895BEADF846FA52B9B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/5B243E30DE4836D1530FA053AA44847FFD91D0601391F3FDB29A4F02E1852380.pygtex\
+    _minted-seminarpaper/5F496CBE3BA1F55E02A73AB52B7466509B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/60C8387A9869783318B1E80E4D0556879B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/657B7C5D6C68B3BCCB52A882FAD2121B9B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/674F24DA3466BAE27EDE9C4286689B929B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/6FE8636E23A5CCF9C0A8DD10C117712F9B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/76DEC88889C576D7F888EEA53F2CDF819B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/798056EEDB671DD147065488D213C84CFD91D0601391F3FDB29A4F02E1852380.pygtex\
     _minted-seminarpaper/79F40D657228C62A83A70A67293D0561FD91D0601391F3FDB29A4F02E1852380.pygtex\
     _minted-seminarpaper/7A2FBED1C9F114B521FE78D5CF037C9F9B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/7ABE721EC8ACD29DCD135C6F2CCD4F9E9B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/7E030710B2BF5136ABC84C0AA7AD7B899B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/836FE6809E0AFA86FD401B906511174C9B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/8701CCE2D716FB00DAC85339EF461A7E9B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/87D713B29AC2810085A8E78AFAE83014FD91D0601391F3FDB29A4F02E1852380.pygtex\
     _minted-seminarpaper/8AAE111CC8E3B68C77BB49CB34C440839B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/8BE9B0B4ABDA5FFD7C710A0BAF403FF0FD91D0601391F3FDB29A4F02E1852380.pygtex\
+    _minted-seminarpaper/A35941023D46A76B821CAE0BDE70A7BB9B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/C9C8133322433A044BDFECA4F40F55949B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/CF735762346983D0079D942C838860059B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/D4D5B20E08D3BF21899A5C81AA5EC80C9B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/DAC5CBC738C187B7C911A1CEB0C879CE9B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/DB1B8680D8D5C33BEF8C44FB535D5DEEFD91D0601391F3FDB29A4F02E1852380.pygtex\
     _minted-seminarpaper/DBA57E49304E64B6FB58583C052EA2269B01B361E1221FE1D1967A6BD986ED62.pygtex\
-    _minted-seminarpaper/EA19432A3765C6D2603AD5442E304DE39B01B361E1221FE1D1967A6BD986ED62.pygtex\
+    _minted-seminarpaper/E845169CCCDEB953A2DADEACA2BFC68FFD91D0601391F3FDB29A4F02E1852380.pygtex\
+    _minted-seminarpaper/F573ACDEC43A9433D8F375A1334093369B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/F713586845678649E9B1D719186F33B99B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/F9199D633A9FFF48BAF4175CD7C87BF99B01B361E1221FE1D1967A6BD986ED62.pygtex\
     _minted-seminarpaper/FCEC5B464791ABDC7938981E5D2EEB57FD91D0601391F3FDB29A4F02E1852380.pygtex\

@@ -111,14 +111,41 @@ pub struct Box<T> where T: ?Sized {
 \caption{A simplified example definition of the \mintinline{rust}{Box} type.}
 \label{box-definition}
 \end{figure}
-\subsection{The \mintinline{rust}{Deref} trait}
 \subsection{Reference Counting in Rust}
 \subsection{Interior Mutability with Cell types}
-``\textit{Interior Mutability} is a design pattern in Rust for allowing you to mutate data even though there are immutable references to that data, which would normally be disallowed by the borrowing rules. The interior mutability pattern involves using unsafe code inside a data structure to bend Rust's usual rules around mutation and borrowing.''\cite{RustBook-InteriorMutability}
+``\textit{Interior Mutability} is a design pattern in Rust for allowing you to mutate data even though there are immutable references to that data, which would normally be disallowed by the borrowing rules. The interior mutability pattern involves using unsafe code inside a data structure to bend Rust's usual rules around mutation and borrowing.''\cite{RustBook-InteriorMutability}.
+There are two types that can be used for this pattern, \mintinline{rust}{Cell<T>} and \mintinline{rust}{RefCell<T>}.
+These types are the owners of the type the encapsulate and they store it on the heap, similar to a \mintinline{rust}{Box<T>}.
+The main difference between a \mintinline{rust}{Box} and one of the cell types is that borrowing rules are applied at compile-time for the \mintinline{rust}{Box}, but at runtime for the cell types.
+These types can be used to ensure to the compiler that code that may look like it breaks the borrowing rules at compile-time, actually upholds the borrowing rules at runtime.
+Should the code break the rules nevertheless, a \mintinline{rust}{panic} will be thrown at runtime.
+The difference between the \mintinline{rust}{Cell<T>} and \mintinline{rust}{RefCell<T>} is that \mintinline{rust}{Cell<T>} is only usable for types that implement the \mintinline{rust}{Copy} trait, because of the way \mintinline{rust}{Cell<T>} handles interior mutability.
+It mutates the data in the container by copying it outside, mutating it, and copying it back inside.
+Obviously only \mintinline{rust}{Copy}-types can be used with this.
+\mintinline{rust}{RefCell<T>} can be used with any type that implements the \mintinline{rust}{Sized} trait.
+It uses references to mutate the data, without using the copy mechanism.
+The figure \ref{mutability-refcell} shows how to construct such a \mintinline{rust}{RefCell} and how to borrow dynamically at runtime.
+\begin{figure}
+\begin{rustcode}
+fn main() {
+    let i = 32;
+    let cell = Cell:new(i);
+    
+    let refcell = RefCell::new(i);
+
+    let r: &u32 = refcell.borrow();
+    let mut r_mut: &mut u32 
+        = refcell.borrow_mut();
+}
+\end{rustcode}
+\vspace{-2em}
+\caption{Constructing a \mintinline{rust}{Cell} and a \mintinline{rust}{RefCell} object and borrowing dynamically.}
+\label{mutability-refcell}
+\end{figure}
 \subsection{Raw pointers}
 \label{raw-pointer}
 Rust has two kinds of references that allow pointing to an arbitrary place in memory.
-These references are called \textit{raw pointers}. 
+These references are called \textit{raw pointers}.
 The two types are \mintinline{rust}{*const T} and \mintinline{rust}{*mut T}.
 How to create such raw pointers is shown in figure \ref{raw-pointer-new} and in figure \ref{raw-pointer-new2}.
 The difference between the \mintinline{rust}{const} and the \mintinline{rust}{mut} variants is simply whether the value in the underlying memory address can be mutated through the pointer, or not.
@@ -158,6 +185,23 @@ The \mintinline{rust}{unsafe} keyword can be used to communicate to the compiler
         \item Implementing an unsafe trait.
 \end{enumerate}
 \cite{RustBook-Unsafe}.
+\paragraph{Dereferencing a raw pointer} is considered unsafe, because raw pointers (see \ref{raw-pointer}) may point to arbitrary memory.
+This mean a raw pointer could point to memory not even reserved by the programm or to NULL.
+When derefencing such a pointer care must be taken to check whether the pointer is even valid first.
+An example of this can be seen in figure \ref{unsafe-derefencing}.
+Since the pointer here will be always be valid it is unnecessary to check it for validity.
+\begin{figure}
+\begin{rustcode}
+let count: u32 = 128;
+let ptr = &count as *mut u32;
+unsafe {
+    *ptr = 130;
+}
+\end{rustcode}
+\vspace{-2em}
+\caption{Dereferencing a raw pointer and assigning a new value.}
+\label{unsafe-derefencing}
+\end{figure}
 \paragraph{Calling an unsafe function or method} is unsafe behaviour, because these unsafe functions generally assume that some invariant is true before they are called.
 A programmer may have unknowingly broken the invariant before calling the function, resulting in a memory violation or other unwanted behaviour.
 An example of this can be seen in figure \ref{unsafe-function}, in which a function called \mintinline{text}{add_three} takes a mutable raw pointer (see \ref{raw-pointer}), offsets it by one, derefences it, and adds three to it.
@@ -195,7 +239,42 @@ fn main() {
 \caption{Updating a static mutable variable in an \mintinline{rust}{unsafe} block.}
 \label{unsafe-staticmut}
 \end{figure}
-\paragraph{Implementing an unsafe trait}
+\paragraph{Implementing an unsafe trait} is similar to an unsafe function.
+Designating a block as \mintinline{rust}{unsafe} tells the compiler, that there is some invariant that he cannot check by himself, but that is crucial for program execution.
+The structure of such an \mintinline{rust}{unsafe trait} can be seen in figure \ref{unsafe-trait}.
+A common example of this is when implementing the \mintinline{rust}{Send} trait for a type the compiler cannot automatically derive it for.
+The documentation for the \mintinline{rust}{Send} trait says ``This trait is automatically implemented when the compiler determines it's appropriate.''\cite{RustDoc-Send}.
+Appropiate here means when all fields of the type implement the \mintinline{rust}{Send} trait too.
+Have a look at figure \ref{unsafe-send} in which he have a type \mintinline{rust}{Test} that has a raw pointer as a field.
+Raw pointers do not implement the \mintinline{rust}{Send} trait, since they have no guarantees about being used in shared environments.
+This leads to our struct \mintinline{rust}{Test} not automatically having the \mintinline{rust}{Send} trait.
+We have to implement it manually with an \mintinline{rust}{unsafe impl}-block as shown.
+\begin{figure}
+\begin{rustcode}
+unsafe trait UnsafeTrait {}
+
+unsafe impl UnsafeTrait for u8 {}
+\end{rustcode}
+\vspace{-2em}
+\caption{The structure of an unsafe trait and its implementation.}
+\label{unsafe-trait}
+\end{figure}
+\begin{figure}
+\begin{rustcode}
+struct Test {
+    ptr: *mut u8, // Doesn't
+                  // implement Send.
+}
+
+unsafe impl Send for Test {
+// Somehow make the
+// raw pointer thread-safe.
+}
+\end{rustcode}
+\vspace{-2em}
+\caption{Implementing the \mintinline{rust}{Send} trait for a struct with non-\mintinline{rust}{Send} fields.}
+\label{unsafe-send}
+\end{figure}
 \section{Conclusion}
 \section{Future work}
 
@@ -391,9 +470,9 @@ fn main() {
 % % neumann1void,neumann2void,neumann3,neumann4,Siewiorek,AmBlBr,Blaauw:1997:CAC,ChPB97,Brom98,Clym93,Buhu99,
 % % Edwa01,Nill99,ABC+90,Rama91,Heid97,Kist95,Klot03,LMcCL92,LFS+92,LMDD92,Vlec03,Cray77,top500,650,Amda67,
 % % Arla88,ODLD86,Hick04,Walk04}
-% % 
+% %
 
 \bibliographystyle{plain}
 % Literature sources are to be found in seminarpaper.bib
-\bibliography{seminarpaper} 
+\bibliography{seminarpaper}
 \end{document}
