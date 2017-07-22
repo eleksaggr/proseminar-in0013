@@ -34,10 +34,10 @@
 \maketitle
 
 \begin{abstract}
-% This paper aims to give a broad overview of existing memory management techniques
-% and a quick introduction to the technique employed by the Rust programming language.
-% Further it will demonstrate the different possibilities when working with memory in
-% the Rust language.
+This paper aims to give a broad overview of existing memory management techniques
+and a quick introduction to the technique employed by the Rust programming language.
+Further it will demonstrate the different possibilities when working with memory in
+the Rust language, and introduce to the different types commonly used.
 \end{abstract}
 
 % \section defines numbered parts of the paper with titles
@@ -51,26 +51,97 @@
 \subsection{Reference Counting}
 \textit{Reference counting} is a simple garbage collection algorithm, that uses reference counts to deallocate objects that are no longer referenced, and thus free the underlying memory.
 Here reference count refers to an internal counter, that tracks the amount of active references to a specific object.
-Everytime an active reference is destroyed the internal reference counter for that object is decremented.
+Every time an active reference is destroyed the internal reference counter for that object is decremented.
 Correspondingly when a new reference to an object is created, the reference counter is incremented, to reflect the number of active references.
 When an objects reference count falls to zero, the object becomes inaccessible.
 The memory used by such an inaccessible object can be then be freed safely.
 
-Reference counting seems superior to any tracing algorithm, because of its simplicity, but there are a few caveats, that are not visibile at first glance.
+Reference counting seems superior to any tracing algorithm, because of its simplicity, but there are a few caveats, that are not visible at first glance.
 Firstly when handling a large amount of objects a deletion may cause a large amount of objects to be freed in a chain reaction.
 This chain reaction can then use up valuable processing time, resulting in a largely unresponsive application for a user.
-This pitfall can be circumvented with the following approach: Whenever an object should be ordinarly deleted, it is instead added to a list of objects that are to be freed.
+This pitfall can be circumvented with the following approach: Whenever an object should be ordinarily deleted, it is instead added to a list of objects that are to be freed.
 The list can then be processed at another point in time, effectively making the whole technique incremental.
 
 A more severe problem is posed by \textit{reference cycles}, where multiple references reference each other, leading to a non-tree-like structure.
-These cycles can not be reclaimed, since each object depdends on another being freed first.
+These cycles can not be reclaimed, since each object depends on another being freed first.
 These shortcomings render reference counting unsatisfactory in most contexts, but the following situations:
 \begin{itemize}
         \item Reference loops are impossible.
         \item Modifications of references are infrequent.
         \item Memory constraints are very tight.
 \end{itemize}
-\subsection{Rust}
+\subsection{Ownership \& Lifetimes}
+Memory safety is one of Rusts primary goals and it achieves it also due to the strict rules about ownership and lifetimes employed by the compiler.
+Rust requires a variable to have \textit{exactly one} owner, where owner means variable binding.
+This can be understood when looking at figure \ref{ownership-transfer} closely.
+First we define a \mintinline{rust}{struct Owned} type.
+We then instantiate a new object of this type and bind it to the binding with the name \mintinline{text}{x}.
+Next we tell the binding \mintinline{text}{y} to take ownership of the object \mintinline{text}{x} currently owns.
+If we then try to use \mintinline{text}{x} again, we will be greeted with a compiler error, since we just broke the ownership rules.
+Once \mintinline{text}{y} took ownership the other binding was invalidated, and thus the rule of having exactly one owner was restored.
+Note here that this example would be optimized away by the compiler, since \mintinline{rust}{Owned} is a Zero Sized Type\cite{Nomicon-ZST}.
+When an owner goes out of scope, its corresponding value is cleaned up.
+
+Further Rust enforces strict rules about references or borrowing rules, that can be summed up as:
+\begin{itemize}
+    \item There may be \textit{one or more} \mintinline{rust}{&T} references to an object at any time.
+    \item There may be \textit{exactly one} \mintinline{rust}{&mut T} reference to an object at any time.
+\end{itemize}
+These choices are \textit{mutually exclusive}.
+By making it impossible to have \mintinline{rust}{&T} and \mintinline{rust}{&mut T} references at the same time Rust tries to avoid data races, where one thread reads data with its \mintinline{rust}{&T} reference, while the other writes using its \mintinline{rust}{&mut T} reference.
+In figure \ref{borrowing} we create a variable binding called \mintinline{text}{x}.
+Then we create a mutable reference to this same variable.
+And then we'd like to print it's content to the screen.
+But this code leads to a compiler error, namely ``error[E0502]: cannot borrow `x` as immutable because it is also borrowed as mutable''.
+The function underlying the \mintinline{rust}{println!} macro takes a immutable reference to its argument.
+So implicitly one was created and the borrowing rules were broken, since we already had an active \mintinline{rust}{&mut u32} reference.
+
+To avoid dangling references Rust uses lifetimes. Every reference has a lifetime associated with it. Usually the compiler infers these lifetimes and simply looks at how long the owner of the object lives.
+
+\begin{figure}
+\begin{rustcode}
+#[derive(Debug)]
+struct Owned {}
+
+let x = Owned{}; 
+
+// Y takes ownership of the Owned object.
+let y = x;
+
+// This won't work.
+println!("{:?}", x);
+\end{rustcode}
+\vspace{-2em}
+\caption{An example of transferring ownership of a variable.}
+\label{ownership-transfer}
+\end{figure}
+\begin{figure}
+\begin{rustcode}
+let mut x: u32 = 42;
+
+// Create a immutable reference.
+let x_ref = &mut x;
+
+// This leads to a compiler error!
+println!("{}", x);
+\end{rustcode}
+\vspace{-2em}
+\caption{Breaking the borrowing rules.}
+\label{borrowing}
+\end{figure}
+\begin{figure}
+\begin{rustcode}
+let x;
+    {
+        let y = 32;
+        x = &y;
+    }
+println!("{}", x);
+\end{rustcode}
+\vspace{-2em}
+\caption{A dangling reference caught by lifetimes.}
+\label{lifetime-dangling}
+\end{figure}
 \section{Using memory in Rust}
 \subsection{Allocating data on the heap}
 \label{box}
@@ -81,7 +152,7 @@ It may seem like there is some kind of magic underneath the \mintinline{rust}{Bo
 In fact a \mintinline{rust}{Box} is only a wrapper around a raw pointer (see \ref{raw-pointer}), that points to the heap, and the size of the object that is stored.
 A simple implementation of this \mintinline{rust}{Box} type is shown in figure \ref{box-definition}.
 When not fully accustomed to the Rust type system one may be puzzled by the \mintinline{rust}{where}-clause in the struct definition.
-This clause simply says the type that is stored in the \mintinline{rust}{Box} must have a fixed size and may not be a Dynamically Sized Type, like for example a Trait.
+This clause simply says the type that is stored in the \mintinline{rust}{Box} must have a fixed size and may not be a Dynamically Sized Type\cite{BlogDST}, like for example a Trait.
 
 Now there is still the question of how the memory used by a \mintinline{rust}{Box} is freed.
 The \mintinline{rust}{Box} struct implements the \mintinline{rust}{Drop} trait.
@@ -124,7 +195,7 @@ It mutates the data in the container by copying it outside, mutating it, and cop
 Obviously only \mintinline{rust}{Copy}-types can be used with this.
 \mintinline{rust}{RefCell<T>} can be used with any type that implements the \mintinline{rust}{Sized} trait.
 It uses references to mutate the data, without using the copy mechanism.
-The figure \ref{mutability-refcell} shows how to construct such a \mintinline{rust}{RefCell} and how to borrow dynamically at runtime.
+Figure \ref{mutability-refcell} shows how to construct both a \mintinline{rust}{Cell} and a \mintinline{rust}{RefCell} and how to borrow dynamically at runtime.
 \begin{figure}
 \begin{rustcode}
 fn main() {
@@ -177,17 +248,18 @@ In some situations a programmer may need to write code, that the static guarante
 Such situations may for example occur whenever raw pointers (see \ref{raw-pointer}) are used to work around some restriction of Rusts borrowing mechanism.
 Another possibility is whenever Rust tries to interact with hardware directly, since hardware does not adhere to Rusts rules.
 The \mintinline{rust}{unsafe} keyword can be used to communicate to the compiler, that the designated block contains 'unsafe' code.
-'Unsafe' here means exactly the following behaviours:
+'Unsafe' here means exactly the following behaviors:
 \begin{enumerate}
         \item Dereferencing a raw pointer.
         \item Calling an unsafe function or method.
         \item Accessing or modifying a mutable static variable.
         \item Implementing an unsafe trait.
+        \item Accessing or modifying a field of a \mintinline{rust}{union} type.
 \end{enumerate}
 \cite{RustBook-Unsafe}.
 \paragraph{Dereferencing a raw pointer} is considered unsafe, because raw pointers (see \ref{raw-pointer}) may point to arbitrary memory.
-This mean a raw pointer could point to memory not even reserved by the programm or to NULL.
-When derefencing such a pointer care must be taken to check whether the pointer is even valid first.
+This mean a raw pointer could point to memory not even reserved by the program or to NULL.
+When dereferencing such a pointer care must be taken to check whether the pointer is even valid first.
 An example of this can be seen in figure \ref{unsafe-derefencing}.
 Since the pointer here will be always be valid it is unnecessary to check it for validity.
 \begin{figure}
@@ -202,11 +274,11 @@ unsafe {
 \caption{Dereferencing a raw pointer and assigning a new value.}
 \label{unsafe-derefencing}
 \end{figure}
-\paragraph{Calling an unsafe function or method} is unsafe behaviour, because these unsafe functions generally assume that some invariant is true before they are called.
-A programmer may have unknowingly broken the invariant before calling the function, resulting in a memory violation or other unwanted behaviour.
-An example of this can be seen in figure \ref{unsafe-function}, in which a function called \mintinline{text}{add_three} takes a mutable raw pointer (see \ref{raw-pointer}), offsets it by one, derefences it, and adds three to it.
+\paragraph{Calling an unsafe function or method} is unsafe behavior, because these unsafe functions generally assume that some invariant is true before they are called.
+A programmer may have unknowingly broken the invariant before calling the function, resulting in a memory violation or other unwanted behavior.
+An example of this can be seen in figure \ref{unsafe-function}, in which a function called \mintinline{text}{add_three} takes a mutable raw pointer (see \ref{raw-pointer}), offsets it by one, deferences it, and adds three to it.
 Obviously this is not memory-safe when the pointer does not own the element after it in memory, and as such the function must be marked \mintinline{rust}{unsafe}.
-The \mintinline{rust}{unsafe} keyword in the function definition additonally acts like an \mintinline{rust}{unsafe} block around the whole function body, which is the reason the dereferencing of the pointer in figure \ref{unsafe-function} is not wrapped in an \mintinline{rust}{unsafe} block.
+The \mintinline{rust}{unsafe} keyword in the function definition additionally acts like an \mintinline{rust}{unsafe} block around the whole function body, which is the reason the dereferencing of the pointer in figure \ref{unsafe-function} is not wrapped in an \mintinline{rust}{unsafe} block.
 \begin{figure}
 \begin{rustcode}
 unsafe fn add_three(ptr: *mut u8) {
@@ -217,12 +289,12 @@ unsafe fn add_three(ptr: *mut u8) {
 \caption{An unsafe function, that adds three to a pointer offset by one.}
 \label{unsafe-function}
 \end{figure}
-\paragraph{Accessing or updating a static mutable variable} is defined to be unsafe behaviour.
+\paragraph{Accessing or updating a static mutable variable} is defined to be unsafe behavior.
 Static mutable variables are comparable to global state in other programming languages.
 Hoare describes Rust as having a ``safe concurrency model''\cite{HoareInterview}.
-This is especially visibile when looking at the concept of borrowing, where Rust enforces safe concurrency through the restrictions on \mintinline{rust}{&T} and \mintinline{rust}{&mut T} references.
+This is especially visible when looking at the concept of borrowing, where Rust enforces safe concurrency through the restrictions on \mintinline{rust}{&T} and \mintinline{rust}{&mut T} references.
 Additionally it is Rusts responsibility to ensure data races on global state can not happen.
-Infact the Rust compiler will not allow accessing or updating such global state, without declaring the operation
+Thus the Rust compiler will not allow accessing or updating such global state, without declaring the operation
 as \mintinline{rust}{unsafe}, after which it is the programmers responsibility to ensure correct handling of data races.
 An example of updating a static mutable variable can be seen in figure \ref{unsafe-staticmut}.
 \begin{figure}
@@ -244,7 +316,7 @@ Designating a block as \mintinline{rust}{unsafe} tells the compiler, that there 
 The structure of such an \mintinline{rust}{unsafe trait} can be seen in figure \ref{unsafe-trait}.
 A common example of this is when implementing the \mintinline{rust}{Send} trait for a type the compiler cannot automatically derive it for.
 The documentation for the \mintinline{rust}{Send} trait says ``This trait is automatically implemented when the compiler determines it's appropriate.''\cite{RustDoc-Send}.
-Appropiate here means when all fields of the type implement the \mintinline{rust}{Send} trait too.
+Appropriate here means when all fields of the type implement the \mintinline{rust}{Send} trait too.
 Have a look at figure \ref{unsafe-send} in which he have a type \mintinline{rust}{Test} that has a raw pointer as a field.
 Raw pointers do not implement the \mintinline{rust}{Send} trait, since they have no guarantees about being used in shared environments.
 This leads to our struct \mintinline{rust}{Test} not automatically having the \mintinline{rust}{Send} trait.
@@ -274,6 +346,29 @@ unsafe impl Send for Test {
 \vspace{-2em}
 \caption{Implementing the \mintinline{rust}{Send} trait for a struct with non-\mintinline{rust}{Send} fields.}
 \label{unsafe-send}
+\end{figure}
+\paragraph{Accessing or modifying a field of a \mintinline{rust}{union} type} is unsafe by definition.
+Unions are similar to Enums, but do not store a tag to identify the variant used.
+They were first introduced in stable Rust 1.19 (released on: 20-07-2017)\cite{RustRelease-Union}.
+Without this tag the compiler does not know, which variant we want to use, and can not make sure we access it correctly.
+\begin{figure}
+\begin{rustcode}
+union MyUnion {
+    f1: u32,
+    f2: u16,
+}
+
+let u = MyUnion{f2: 45};
+
+unsafe {
+    u.f2 = 3;
+};
+
+let v = unsafe {u.f2};
+\end{rustcode}
+\vspace{-2em}
+\caption{Accessing and modifying a field of a \mintinline{rust}{union}.}
+\label{unsafe-union}
 \end{figure}
 \section{Conclusion}
 \section{Future work}
