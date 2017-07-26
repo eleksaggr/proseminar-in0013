@@ -15,6 +15,7 @@
 \newminted{cpp}{mathescape,linenos,frame=single,numbersep=0.5mm}
 \newminted{rust}{mathescape,linenos,frame=single,numbersep=0.5mm}
 \definecolor{almostnogray}{rgb}{0.92,0.92,0.92}
+\graphicspath{{Figures/}}
 
 \sloppy
 
@@ -43,12 +44,66 @@ the Rust language, and introduce to the different types commonly used.
 % \section defines numbered parts of the paper with titles
 % there also are \subsection and \subsubsection
 \section{Introduction}
+Garbage collection and reference counting are both types of memory management techniques.
+These techniques are all about the maximization of performance and effectiveness of memory usage in programs.
+Today there are a few different approaches to memory management.
+The first is manual memory management, where there are no mechanisms that help you when managing your heap memory.
+The developer has to allocate the right amount of memory and free it after usage.
+Further he must know himself whether memory was already freed or is still in use.
+As you might have already guessed, this can cause a lot of trouble for the programmer, especially to those new to manual memory management or programming in general.
+Bugs that occur often when using memory management are for example:
+\begin{itemize}
+    \item Use-after-free errors, where memory is used after having already been freed
+    \item Double-free errors, where memory is freed twice, leading to unexpected behavior
+    \item Memory leaks, where memory is continually wasted during execution
+\end{itemize}
 
+Many programming languages have found ways to deal with these problems, by giving the responsibility of memory management to a dedicated mechanism, called \textit{garbage collection}.
+This mechanism detects whether memory can be freed without help from the programmer, and allows the programmer to forget about freeing memory by himself.
+And as to why one would choose Rusts approach, is a tricky question.
+Rust is a very complex and intricate language with a very steep learning curve.
+And the complexity stems from there exactly.
+The performance and memory safety with zero-cost abstractions it provides makes it an attractive contender for many tasks in todays market.
+It is faster than most garbage collected languages in many scenarios \cite{Benchmark} and has a performance close to C in some regards.
+The compiler is very strict and most errors that are runtime errors in other programming languages are compile-time errors in Rust.
+This makes Rust suited for applications that absolutely cannot fail at runtime.
 % Use labels to be able to refer to this position from somewhere else
 \label{introduction}
 \section{Garbage Collection}
 \subsection{General principle}
+The general motivation behind garbage collection is taking away the risks of managing the memory on your own, and offering viable solutions to the bugs introduced in \ref{introduction}.
+As the name already suggests, garbage collection tries to free memory of objects that are no longer used in the application.
+When the algorithm detects an unused, but allocated memory space, it will free it. 
+Garbage collection is often called slow, which is not entirely correct. Matthew Hertz and Emery D. Berger write the following: ``In particular, when garbage collection has five times as much memory as
+required, its runtime performance matches or slightly exceeds that of explicit memory management.
+However, garbage collection’s performance degrades substantially when it must use smaller heaps. With
+three times as much memory, it runs 17\% slower on average, and with twice as much memory, it runs 70\%
+slower.''\cite{HertzBerger05}.
+\subsubsection{Mark \& Sweep}
+\textit{Mark \& Sweep} does exactly that.
+It is an algorithm, that starting from a root set, which is usually a combination of variables currently on the stack, active threads and the data segment, does a graph search to find objects that can still be reach via references. These objects and the root set can be seen in figure \ref{mark-sweep-setup}.
+Afterwards it scans the entire heap memory and marks any objects that are unreachable, as seen in figure \ref{mark-sweep-mark}.
+The unreachable objects are then removed in the ``sweep'' stage, as seen in figure \ref{mark-sweep-sweep}.
+\begin{figure}
+    \def\svgwidth{\columnwidth}
+    \input{Figures/mark_sweep_setup.pdf_tex}
+    \caption{The initial situation before the beginning of the Mark \& Sweep algorithm.}
+    \label{mark-sweep-setup}
+\end{figure}
+\begin{figure}
+    \def\svgwidth{\columnwidth}
+    \input{Figures/mark_sweep_mark.pdf_tex}
+    \caption{The ``mark'' stage of the algorithm.}
+    \label{mark-sweep-mark}
+\end{figure}
+\begin{figure}
+    \def\svgwidth{\columnwidth}
+    \input{Figures/mark_sweep_sweep.pdf_tex}
+    \caption{The ``sweep'' stage of the algorithm.}
+    \label{mark-sweep-sweep}
+\end{figure}
 \subsection{Reference Counting}
+\label{reference-counting}
 \textit{Reference counting} is a simple garbage collection algorithm, that uses reference counts to deallocate objects that are no longer referenced, and thus free the underlying memory.
 Here reference count refers to an internal counter, that tracks the amount of active references to a specific object.
 Every time an active reference is destroyed the internal reference counter for that object is decremented.
@@ -71,6 +126,7 @@ These shortcomings render reference counting unsatisfactory in most contexts, bu
         \item Memory constraints are very tight.
 \end{itemize}
 \subsection{Ownership \& Lifetimes}
+\label{ownership}
 Memory safety is one of Rusts primary goals and it achieves it also due to the strict rules about ownership and lifetimes employed by the compiler.
 Rust requires a variable to have \textit{exactly one} owner, where owner means variable binding.
 This can be understood when looking at figure \ref{ownership-transfer} closely.
@@ -96,14 +152,17 @@ But this code leads to a compiler error, namely ``error[E0502]: cannot borrow `x
 The function underlying the \mintinline{rust}{println!} macro takes a immutable reference to its argument.
 So implicitly one was created and the borrowing rules were broken, since we already had an active \mintinline{rust}{&mut u32} reference.
 
-To avoid dangling references Rust uses lifetimes. Every reference has a lifetime associated with it. Usually the compiler infers these lifetimes and simply looks at how long the owner of the object lives.
-
+To avoid dangling references Rust uses lifetimes.
+Every reference has a lifetime associated with it.
+Usually the compiler infers these lifetimes and simply looks at how long the owner of the object lives.
+Lifetimes in action can be seen in figure \ref{lifetime-dangling}.
+The compiler sees that \mintinline{text}{x} does not live long enough, for the reference to \mintinline{text}{r} to be still valid and throws an error.
 \begin{figure}
 \begin{rustcode}
 #[derive(Debug)]
 struct Owned {}
 
-let x = Owned{}; 
+let x = Owned{};
 
 // Y takes ownership of the Owned object.
 let y = x;
@@ -158,8 +217,6 @@ Now there is still the question of how the memory used by a \mintinline{rust}{Bo
 The \mintinline{rust}{Box} struct implements the \mintinline{rust}{Drop} trait.
 The documentation for this trait describes it as follows: ``The \mintinline{rust}{Drop} trait is used to run some code when a value goes out of scope. This is sometimes called a destructor''\cite{RustDoc-Drop}.
 The \mintinline{rust}{Box} type uses this trait to free the memory reserved on the heap, when it goes out of scope.
-
-
 \begin{figure}
 \begin{rustcode}
 fn main() {
@@ -183,7 +240,65 @@ pub struct Box<T> where T: ?Sized {
 \label{box-definition}
 \end{figure}
 \subsection{Reference Counting in Rust}
+Usually when creating a variable binding in Rust, the value stored in the variable is owned by it (see \ref{ownership}).
+You may run into situations, where the exact lifetime of a pointer is unknown, since it may be, for example, dependant on user input.
+In such cases the compiler can not directly evaluate the lifetime of a variable and may restrict this behavior.
+For these cases Rust offers a type called \mintinline{rust}{Rc<T>}\cite{RustDoc-Rc}.
+The type basically consists of a pointer to a region in the heap memory and a counter that counts the amount of active references to the object, according to the rules in section \ref{reference-counting}.
+These reference counters can be created as seen in figure \ref{rc-new}.
+To increment the reference counter and create a new reference to an existing \mintinline{rust}{Rc} we can use \mintinline{rust}{Rc::clone()} as seen in figure \ref{rc-clone}.
+Obviously all instances cloned from an \mintinline{rust}{Rc} point to the same object, and thus any reference can modify it.
+The object that is stored in the \mintinline{rust}{Rc} will stay alive, as long as there is still a living reference pointing to it.
+When all references are destroyed and the reference counter decrements to 0, the data on the heap will be freed.
+An important fact to consider is that the data wrapped by the \mintinline{rust}{Rc} is immutable.
+To make it mutable a trick such as using a \mintinline{rust}{RefCell} (see \ref{interior-mutability}) must be used.
+It is possible to ``save'' a value from destruction, by using the method \mintinline{rust}{Rc::try_unwrap}.
+It can be called when there is \textit{exactly one} reference to the object alive.
+This can be seen in figure \ref{rc-unwrap}.
+The method returns a \mintinline{rust}{Result} that must then be checked for the \mintinline{rust}{Ok}
+variant.
+
+There are also some downsides to the \mintinline{rust}{Rc} type.
+\begin{itemize}
+        \item Cyclic references can still not be freed.
+        \item Computational cost during runtime, since \mintinline{rust}{Rc} cannot be evaluated at compile-time.
+        \item \mintinline{rust}{Rc} is not thread-safe.
+\end{itemize}
+In multi-threaded scenarios it is wise to use \mintinline{rust}{Arc<T>}, which is basically an atomic version of the \mintinline{rust}{Rc} type.
+This renders it thread-safe. 
+\mintinline{rust}{Arc} functions in much the same way as \mintinline{rust}{Rc}, with the small caveat of being marginally slower in comparison to \mintinline{rust}{Rc}.
+\begin{figure}
+\begin{rustcode}
+let rc = Rc::new(56);
+\end{rustcode}
+\vspace{-2em}
+\caption{Creating a new \mintinline{rust}{Rc} object.}
+\label{rc-new}
+\end{figure}
+\begin{figure}
+\begin{rustcode}
+let rc = Rc::new(56);
+let rc2 = rc.clone();
+\end{rustcode}
+\vspace{-2em}
+\caption{Cloning a reference and incrementing the reference counter.}
+\label{rc-clone}
+\end{figure}
+\begin{figure}
+\begin{rustcode}
+let rc = Rc::new(56);
+
+match rc.try_unwrap() {
+    Ok(_) => println!("Ok"),
+    Err(_) => println!("Err"),
+}        
+\end{rustcode}
+\vspace{-2em}
+\caption{Getting the object wrapped in the \mintinline{rust}{Rc}.}
+\label{rc-unwrap}
+\end{figure}
 \subsection{Interior Mutability with Cell types}
+\label{interior-mutability}
 ``\textit{Interior Mutability} is a design pattern in Rust for allowing you to mutate data even though there are immutable references to that data, which would normally be disallowed by the borrowing rules. The interior mutability pattern involves using unsafe code inside a data structure to bend Rust's usual rules around mutation and borrowing.''\cite{RustBook-InteriorMutability}.
 There are two types that can be used for this pattern, \mintinline{rust}{Cell<T>} and \mintinline{rust}{RefCell<T>}.
 These types are the owners of the type the encapsulate and they store it on the heap, similar to a \mintinline{rust}{Box<T>}.
@@ -201,11 +316,11 @@ Figure \ref{mutability-refcell} shows how to construct both a \mintinline{rust}{
 fn main() {
     let i = 32;
     let cell = Cell:new(i);
-    
+
     let refcell = RefCell::new(i);
 
     let r: &u32 = refcell.borrow();
-    let mut r_mut: &mut u32 
+    let mut r_mut: &mut u32
         = refcell.borrow_mut();
 }
 \end{rustcode}
@@ -276,7 +391,7 @@ unsafe {
 \end{figure}
 \paragraph{Calling an unsafe function or method} is unsafe behavior, because these unsafe functions generally assume that some invariant is true before they are called.
 A programmer may have unknowingly broken the invariant before calling the function, resulting in a memory violation or other unwanted behavior.
-An example of this can be seen in figure \ref{unsafe-function}, in which a function called \mintinline{text}{add_three} takes a mutable raw pointer (see \ref{raw-pointer}), offsets it by one, deferences it, and adds three to it.
+An example of this can be seen in figure \ref{unsafe-function}, in which the function \mintinline{text}{add_three} takes a mutable raw pointer (see \ref{raw-pointer}), offsets it by one, deferences it, and adds three to it.
 Obviously this is not memory-safe when the pointer does not own the element after it in memory, and as such the function must be marked \mintinline{rust}{unsafe}.
 The \mintinline{rust}{unsafe} keyword in the function definition additionally acts like an \mintinline{rust}{unsafe} block around the whole function body, which is the reason the dereferencing of the pointer in figure \ref{unsafe-function} is not wrapped in an \mintinline{rust}{unsafe} block.
 \begin{figure}
@@ -371,202 +486,9 @@ let v = unsafe {u.f2};
 \label{unsafe-union}
 \end{figure}
 \section{Conclusion}
-\section{Future work}
-
-% \emph{Latex} is the system of choice for scientific publications. Papers
-% are expected to be delivered in Latex form, scientific publishers
-% even require you to make use of their templates \cite{springer,acm}.
-% We thus strongly encourage students to get to grips with Latex. As
-% programmers, You will most likely enjoy the workflow of a text
-% processor like Latex anyway.
-
-% The following is meant as a demonstration of the capabilities and
-% the source code, that is necessary to produce this output. You may
-% use the source code of this seminar paper as a template, if you wish.
-
-% %start demonstration
-
-% First, we want to refer to the figures and the introduction.
-% See Fig.\ref{TUM} for the first floating figure with column width,
-% and Fig.\ref{Fig2} for the one using the full page width.
-% And here, we want to put a reference to the introduction which is
-% Section \ref{introduction}.
-
-% In translating this template from German to English, I decided to
-% stop here. There is not really much to get from the German text
-% following. Anything Latex-related can also be looked up on the
-% net. There is a {\it huge} number of tutorials, and so on.
-
-% Please do not use to much different font sizes and styles. It should
-% be completely enough to go to {\em italic mode} for emphasizing something,
-% such as newly introduced terms.
-% You can refer to other parts of your paper (e.g. see Sec.~\ref{introduction}).
-% Quoting in Latex is done ``this way''.
-% Further, you may have problems with punctation characters.
-% Most of them just need to be prefixed by a backslash, for others you may
-% temporarily switch to math mode:
-% \$ \& \% \# \{ \} [ ] \_ @ \S $<$ $>$ $\backslash$ @ \textasciitilde /
-
-% Talking about math mode: you can do some very nice things this way:
-% \begin{equation}
-% a^2 + b^2 = c^2
-% \label{Pythagoras}
-% \end{equation}
-% Again, refering to this equation is easy (see Eq.~\ref{Pythagoras}).
-% If you do not need numbering for equations, use the {\em displaymath}
-% environment:
-% \begin{displaymath}
-% x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a}\\
-% \end{displaymath}
-% Short equations simply can be used within the regular text flow, such
-% as with $x \to \infty$. Obviously, math is fun with Latex.
-
-
-% \subsection*{Enumerations}
-
-% Enumerations using bullet points:
-
-% \begin{itemize}
-% 	\item this is the first item of this list of interesting facts,
-% 	\item second item,
-% 	\item and the last one.
-% \end{itemize}
-
-% They also can be numbered:
-
-% \begin{enumerate}
-% 	\item item one,
-% 	\item item two,
-% 	\item item three.
-% \end{enumerate}
-
-% As shown, numbers always should be written out in the text, unless the
-% belong to a title or a formula.
-
-% \section{Literature}
-
-% At the end of your paper, you should have a nice list of used
-% literature. For scientific papers, this actually is needed. You always
-% use other works as base for your own. Usually, you are not the only
-% one thinking about a given difficult problem, so there is always
-% related work which {\em must} be cited if known to the author.
-
-% Further, if you want to copy relevant sentences from an
-% original paper, you {\em have} to cite them correctly, for example
-% in this way:
-% \begin{quote}
-% 	``I think there is a world market for maybe five computers.''
-% 	(T.J. Watson, IBM, 1943)
-% \end{quote}
-% However, in computer science, direct citations are uncommon if not
-% even considered bad style -- with the notable exception of lemmas
-% and theorems.
-
-% Much more common is the indirect citation. Here, the cited work
-% (especially all the regular text) must be
-% written/phrased by you. If you write about some results or fact
-% stated in another paper, you should refer to it.
-% The `Analytical Engine'' --- a mechanical calculation machine ---
-% created by Charles Babbage in the year 1838 was based on the decimal
-% system
-% % use \cite to refer to papers from seminarpaper.bib
-% % this file is processed by bibtex, and it automatically adds numbering
-% \cite{Brom98}.
-
-% You can find new sources for scientific topics quite comforatbly via
-% DBLP Computer Science Bibliography \cite{DBLP}. This site not only
-% acts as a registry for almost all publications in computer scientific
-% journals and conferences, but also provides You with correctly
-% formated \emph{bibtex}-entries, ready to be integrated into your
-% seminar papers \emph{bib}-file.
-
-% \section{Figures and Tables}
-
-% No need to understand the following text.
-
-% Figures can span either one column (see Fig.~\ref{TUM}) or the full
-% page width (see Fig.~\ref{Fig2}).
-% Latex automatically tries to find the best place for these floating
-% figures. To influence that, you may move the figure a bit to the front
-% of your text.
-% As can be seen in Fig.~\ref{TUM}, using raster images usually results in
-% quite bad quality. Better use vector formats: draw the figures with
-% {\em inkscape} \cite{inkscape}, and save them as PDF or SVG. As example of
-% this procedure, see Fig.~\ref{Fig2}).
-
-% % Narrow tables (just one column) have no * at the end
-% \begin{table*}
-% % label is for this table
-% \label{Tab1}
-% \begin{center}
-% % arguments:
-% % c = center
-% % l = left
-% % r = right (z. B. for cash)
-% % p = columns with fixed width, using block layout
-% % | = vertical line
-% \begin{tabular}{|l|p{2cm}|c|c|c|c|c|r|}
-% % horizontal line
-% \hline
-% % & means: next column
-% % \\ means: next row
-% 	& Column 1 & Column 2 & Column 3 & Column 4& Column 5& Column 6& Amount\\
-% \hline
-% Row 1 & This column has a maximal width of 2 cm.& X & X& X& X& X& 126,00\\
-% \hline
-% Row 2 & & \multicolumn{3}{p{5cm}|}{This entry occupies three columns.}& X &X & 8,00\\
-% \hline
-% \multicolumn{7}{|l}{Sum} &134,00\\
-% \hline
-% \end{tabular}
-% \caption{For this layout, we want table captions to be {\em below} the actual table.}
-% \end{center}
-% \end{table*}
-
-% Similar to figures, tables can be referred to in the text (see Tab.~\ref{Tab1}).
-% However, sometimes it is useful to embed tables directly in the regular
-% text flow:
-
-% \begin{center}
-% \begin{tabular}{|c|c|c|}
-% \hline
-% 	& Column 1 & Column 2 \\
-% \hline
-% Row 1 & & \\
-% Row 1 & & \\
-% \hline
-% \end{tabular}
-% \end{center}
-
-
-% \section{Summary}
-% \label{summary}
-
-% The summary shortly repeats the core ideas and results from the
-% previous text. If the reader has problems understanding the summary
-% he knows that he should go back to the relevant sections.
-% Thus, the last section should consist of:
-
-% \begin{itemize}
-% 	\item a summary,
-% 	\item an evaluation of what was done, importance of this work,
-% 	\item what is left, what still needs to be done,
-%         \item short outlook into the future.
-% \end{itemize}
-
-% Last but not least, we can explain anything missing yet in the evaluation
-% done in this paper. This allows to refer to what readers can expect from
-% authors in the future.
-
-% % Put citations from bibtex into References section which were not
-% % explicity cited.
-% % \nocite{robotron,
-% % stonx,vice,650sim,herculessim,zib,4004,thermal1,thermal2,rojas,neumann,
-% % neumann1void,neumann2void,neumann3,neumann4,Siewiorek,AmBlBr,Blaauw:1997:CAC,ChPB97,Brom98,Clym93,Buhu99,
-% % Edwa01,Nill99,ABC+90,Rama91,Heid97,Kist95,Klot03,LMcCL92,LFS+92,LMDD92,Vlec03,Cray77,top500,650,Amda67,
-% % Arla88,ODLD86,Hick04,Walk04}
-% %
-
+Rust is a valuable option over garbage-collected languages, when writing performance critical software.
+Its strict rules lead to a steep learning curve, that may mean lowered efficiency for the programmer in the beginning.
+It is especially suited for tasks that are currently in the domain of the C language, like server applications, operating systems programming and programming for embedded systems.
 \bibliographystyle{plain}
 % Literature sources are to be found in seminarpaper.bib
 \bibliography{seminarpaper}
